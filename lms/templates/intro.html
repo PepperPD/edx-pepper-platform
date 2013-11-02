@@ -1,0 +1,157 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.core.urlresolvers import reverse %>
+<%! from time import strftime %>
+
+<%inherit file="main.html" />
+<%namespace name='static' file='static_content.html'/>
+<link rel="stylesheet" type="text/css"  href="/static/tmp-resource/css/ppd-general01.css"/>
+<script>
+jQuery(function($){
+	$("._downmenu_pp_title").click(function(){
+		$("._downmenu_pp_body").each(function(i,t){
+			$(t).slideUp("slow");
+			$(t).prev('._downmenu_pp_title').removeClass("_downmenu_pp_title_downImg");
+			$(t).prev('._downmenu_pp_title').addClass("_downmenu_pp_title_leftImg");
+		});
+		if($(this).next("._downmenu_pp_body").css("display")=='none'){
+			$(this).next("._downmenu_pp_body").slideDown();
+			$(this).removeClass("_downmenu_pp_title_leftImg");
+			$(this).addClass("_downmenu_pp_title_downImg");
+		}else{
+			$(this).next("._downmenu_pp_body").slideUp();
+			$(this).removeClass("_downmenu_pp_title_downImg");
+			$(this).addClass("_downmenu_pp_title_leftImg");
+		}
+		
+	});
+});
+</script>
+<style type="text/css" media="screen">
+#btn-dashboard{display:none;}
+
+  #page-nav,#page-footer{
+  width:960px;
+  }
+  ul.left {
+  list-style:none;
+  }
+  ul.left li{
+  margin-top:30px;font-size:16px;
+  }
+  ul.left a{
+  color:#666;
+  }  
+</style>
+<div style="text-align:center;background:#f5f5f5">
+	<div style="margin:auto;width:960px;height:195px;background:url(static/images/ppd-general-banner01.png);">
+		<section class="_banner_title_font">ABOUT PEPPER</section>
+	</div>
+  
+  <div style="width:960px;margin:auto;background:#fff;">
+    <div style="float:left;width:217px;height:1610px;background:#E6F4FB;text-align:left;">
+      <ul class="left">
+        <li><a href="/intro" style="color:#3461ad;">ABOUT PEPPER</a></li>
+        <li><a href="/intro_research">RESEARCH & PEDAGOGY</a></li>
+        <li><a href="/intro_ourteam">OUR TEAM</a></li>
+        <li><a href="/intro_faq">FAQ</a></li>
+		<li><a href="/_contact">CONTACT US</a></li>
+		<li><a href="/press">PRESS</a></li>
+      </ul>
+    </div>
+    <div style="float:left;width:743px;height:1610px;text-align:left;">
+      <div style="padding:20px;">
+        <h2 style="font-weight:300 !important;font-size:25px;color:#3461ad;text-align:left;">OUR STORY</h2>
+        <hr />
+        <p class="_body_content_font">
+          Common Core State Standards (CCSS), adopted by 90% of states across the country, will touch the lives of every teacher and all their students. For the first time in our educational history, a clear and unified set of expectations will guide classroom instruction to ensure that all students are ready for college and careers. Educators everywhere are anxiously preparing for the implementation of these standards and aligned assessments by the beginning of the 2014-15 school year, seeking the best possible resources to guide them in the process.
+		</p>
+		
+		<p><h2 class="_body_content_title_font">Pepper Team</h2></p>
+		<section class="_body_content_font">
+			PCG, working closely with over 4,000 districts across the country, listens and takes notes as educators articulate their Common Core needs. Teachers share their excitement about a project-based, performance-oriented set of standards and accompanying assessments that encourage them to teach in an effective manner to guarantee student success. They also express a need for guidance and assistance to effectively implement the CCSS.
+		</section>
+		<br>
+		<section class="_body_content_font">
+			WestEd, with over 4 decades of experience in the field translating research into practice, brings a wide range of expertise in subject matter to the Common Core conversation, especially in the key curricular areas of ELA/Literacy and Math. As the leading educational professional service and publishing organization, they know quality and they know what districts want and need.  Through close contact with their clients, WestEd captures the ideal needs of schools and districts and delivers trusted content.
+		</section>
+		<br>
+		<section class="_body_content_font">
+			EDU2000 has more than 20 years creating online educational resources in mathematics, science and STEM, and has managed large technology platform implementations in multiple states. 
+		</section>
+		<br>
+		<section class="_body_content_font">
+			When PCG, WestEd and EDU2000 sat down to combine their mutual discoveries, they envisioned a tool to address common themes expressed by every educator: a tool with direct online access; a tool to help every teacher become a CCSS specialist; a tool with built in accountability; and a tool that allows ALL teachers to reflect and track their learning and share Common Core thoughts with colleagues. 
+		</section>
+		<br>
+		<section class="_body_content_font">
+			As the brain trust of WestEd and PCG educational specialists developed the content and structure of the new tool, they selected edX, a Harvard/MIT developed learning community to build an emerging technology platform to deliver the new program.
+		</section>
+		<br>
+		<section class="_body_content_font" style="font-style:italic;">
+			The result of this dynamic collaboration: <span style="font-size:12px;font-weight:bold;font-style:italic;">Pepper</span>, an online series of the highest quality common core courses available to educators.
+		</section>
+		
+		<p><h2 class="_body_content_title_font">Pepper Power</h2></p>
+		<section class="_body_content_font">
+			With the launch of Pepper, districts now have a powerful solution to their Common Core needs, a perfect supplement to existing local efforts. Pepper makes a difference in how and when teachers learn, through a manageable online community that helps them navigate the new Common Core standards and assessments. The impact of Common Core is immediate and lasting.
+		</section>
+		<br>
+		<div class="_downmenu_pp">
+			<div class="_downmenu_pp_title _downmenu_pp_title_leftImg _body_content_font"> Why <i>Teachers</i> love Pepper</div>
+			<div class="_downmenu_pp_body _body_content_font">
+				<ul>
+					<li>All teachers can be their own Common Core specialist without having to align their own busy schedules with those of district mentors and designated specialists.</li>
+					<li>Pepper course content is immediately applicable to curriculum design and lesson implementation, giving teachers a progressive mastery of the knowledge and use of Common Core concepts.</li>
+					<li>Pepper Common Core courses offer something for every teacher: Math and ELA/Literacy at elementary, middle school, and high school levels.</li>
+					<li>Courses are direct access online, self-paced, available 24-7 to adjust to every teacher's unique schedule.</li>
+					<li>Accountability is built into the Pepper environment, helping teachers track their thoughts and questions through reflection and journaling about their Common Core needs and practices, as well as sharing them with supervisors and colleagues.</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="_downmenu_pp">
+			<div class="_downmenu_pp_title _downmenu_pp_title_leftImg _body_content_font"> Why <i>Administrators</i> love Pepper</div>
+			<div class="_downmenu_pp_body _body_content_font">
+				<ul>
+					<li>Principals and Curriculum Directors can provide quality Common Core courses to EVERY member of their staff in Pepper's self-paced solution.</li>
+					<li>For less than the cost of sending a few teachers to face-to-face training, administrators can purchase annual Pepper accounts for all teachers.</li>
+					<li>School leaders can build a consistent foundation in Common Core concepts through a shared conversation among teachers within the Pepper online environment.</li>
+					<li>Pepper provides leaders with a Common Core solution that not only supplements their existing programs, but also helps them unify and combine an array of district efforts.</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="_downmenu_pp">
+			<div class="_downmenu_pp_title _downmenu_pp_title_leftImg _body_content_font"> Why <i>Students</i> love Pepper</div>
+			<div class="_downmenu_pp_body _body_content_font">
+				<ul>
+					<li>Through the Pepper courses and community, teachers are able to make teaching and learning more relevant, effective, and appropriate to the needs of students.</li>
+					<li>Students feel more secure about their futures knowing teachers using Pepper will prepare them for college and careers.</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="_downmenu_pp">
+			<div class="_downmenu_pp_title _downmenu_pp_title_leftImg _body_content_font"> Why <i>Parents</i> love Pepper</div>
+			<div class="_downmenu_pp_body _body_content_font">
+				<ul>
+					<li>Parents want to know how Common Core will affect their children's current and future education. Teachers using Pepper allay parents' concerns and implement Common Core strategies to ensure student success.</li>
+					<li>Teachers using Pepper can provide parents with resources and strategies to help prepare their children for the new Common Core shifts and next-generation assessments.</li>
+				</ul>
+			</div>
+		</div>
+		
+		<p><h2 class="_body_content_title_font">Pepper Community</h2></p>
+		<section class="_body_content_font">
+			By entering the Pepper community, teachers and administrators will join the fastest and largest growing network of educators in the Common Core world, with courses pinpointed for teacher and student success, quality WestEd resources, and a collaborative group of colleagues across the nation engaged in a common conversation around Common Core concepts and implementation.
+		</section>
+		<br>
+		<br>
+		<p class="_body_content_font">
+			If you have specific questions about Pepper, please feel free to reach out to us at <a href="mailto:pepper@pcgus.com" class="blue">pepper@pcgus.com</a>.
+		</p>
+      </div>
+    </div>
+    <br style="clear:both"/>
+  </div>
+</div>
