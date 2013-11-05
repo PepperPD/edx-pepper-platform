@@ -99,17 +99,31 @@ class @CombinedOpenEnded
   combined_rubric_sel: '.combined-rubric-container'
   open_ended_child_sel: 'section.open-ended-child'
   error_sel: '.error'
-  answer_area_sel: 'textarea.answer'
+  #@begin:textarea className
+  #@date:2013-11-02  
+  #@end
+  #answer_area_sel: 'textarea.answer'
+  answer_area_sel: '.mceEditor'
+  #@end
   answer_area_div_sel : 'div.answer'
   prompt_sel: '.prompt'
   rubric_wrapper_sel: '.rubric-wrapper'
   hint_wrapper_sel: '.hint-wrapper'
   message_wrapper_sel: '.message-wrapper'
   submit_button_sel: '.submit-button'
+  #@begin:Mockup code
+  #@date:2013-11-02 
+  #save_button_sel: '.save-button'
+  #@end
   skip_button_sel: '.skip-button'
+  file_upload_list_sel: '.file-upload-list'
   file_upload_sel: '.file-upload'
   file_upload_box_sel: '.file-upload-box'
   file_upload_preview_sel: '.file-upload-preview'
+  #@begin:ora loading image
+  #@date:2013-11-02 
+  ora_loading_sel: '.ora-loading'
+  #@end
   fof_sel: 'textarea.feedback-on-feedback'
   sub_id_sel: 'input.submission_id'
   grader_id_sel: 'input.grader_id'
@@ -181,6 +195,10 @@ class @CombinedOpenEnded
     @hint_wrapper = @$(@oe).find(@hint_wrapper_sel)
     @message_wrapper = @$(@oe).find(@message_wrapper_sel)
     @submit_button = @$(@oe).find(@submit_button_sel)
+    #@begin:Mockup code
+    #@date:2013-11-02 
+    #@save_button = @$(@oe).find(@save_button_sel)
+    #@end
     @child_state = @oe.data('state')
     @child_type = @oe.data('child-type')
     if @child_type=="openended"
@@ -188,24 +206,35 @@ class @CombinedOpenEnded
       @skip_button.click @skip_post_assessment
 
     @file_upload_area = @$(@oe).find(@file_upload_sel)
+    @file_upload_list = @$(@oe).find(@file_upload_list_sel)
     @can_upload_files = false
     @open_ended_child= @$(@oe).find(@open_ended_child_sel)
-
-    @out_of_sync_message = 'The problem state got out of sync.  Try reloading the page.'
-
+    #@begin:!ora-loading对象引用
+    #@date:2013-11-02 
+    @ora_loading=@$(@oe).find(@ora_loading_sel)
+    #@end
+    #@begin:!去除提示
+    #@out_of_sync_message = 'The problem state got out of sync.  Try reloading the page.'
+    @out_of_sync_message = ''
+    #@end
+    #@begin:!prompt 是否展开
+    #@date:2013-11-02
     if @task_number>1
-      @prompt_hide()
+      @prompt_show()
     else if @task_number==1 and @child_state!='initial'
-      @prompt_hide()
-
+      @prompt_show()
+    #@end
     @find_assessment_elements()
     @find_hint_elements()
 
     @rebind()
-
   get_html_callback: (response) =>
-    @coe.replaceWith(response.html)
-
+    #@begin:!避免response为空出现的错误
+    #@date:2013-11-02   
+    try
+      @coe.replaceWith(response.html)
+    catch
+    #@end
   get_html: () =>
     url = "#{@ajax_url}/get_html"
     $.ajaxWithPrefix({
@@ -219,17 +248,22 @@ class @CombinedOpenEnded
   show_combined_rubric_current: () =>
     data = {}
     $.postWithPrefix "#{@ajax_url}/get_combined_rubric", data, (response) =>
-      if response.success
-        @combined_rubric_container.after(response.html).remove()
-        @combined_rubric_container= @$(@combined_rubric_sel)
-        @toggle_rubric("")
-        @rubric_collapse = @$(@rubric_collapse_sel)
-        @rubric_collapse.click @toggle_rubric
-        @hide_rubrics()
-        @$(@previous_rubric_sel).click @previous_rubric
-        @$(@next_rubric_sel).click @next_rubric
-        if response.hide_reset
-          @reset_button.hide()
+      #@begin:!避免response为空出现的错误
+      #@date:2013-11-02   
+      try
+        if response.success
+          @combined_rubric_container.after(response.html).remove()
+          @combined_rubric_container= @$(@combined_rubric_sel)
+          @toggle_rubric("")
+          @rubric_collapse = @$(@rubric_collapse_sel)
+          @rubric_collapse.click @toggle_rubric
+          @hide_rubrics()
+          @$(@previous_rubric_sel).click @previous_rubric
+          @$(@next_rubric_sel).click @next_rubric
+          if response.hide_reset
+            @reset_button.hide()
+      catch
+      #@end
 
   message_post: (event)=>
     external_grader_message=$(event.target).parent().parent().parent()
@@ -266,21 +300,51 @@ class @CombinedOpenEnded
 
   rebind: () =>
     # rebind to the appropriate function for the current state
+    @answer_area.toggleClass(@location);
     @submit_button.unbind('click')
     @submit_button.show()
+    #@begin:Mockup code
+    #@date:2013-11-02
+    #@save_button.show()
+    #@end
     @reset_button.hide()
     @hide_file_upload()
     @next_problem_button.hide()
+    #@begin:ora_loading hide
+    #@date:2013-11-02
+    @ora_loading.hide()
+    #@end
     @hint_area.attr('disabled', false)
-
+    #@begin:rubric_wrapper hide
+    #@date:2013-11-02
+    @rubric_wrapper.hide()
+    #@end
+    #@begin:Mockup code
+    #@date:2013-11-02
+    #@save_button.click @save_text
+    #@end
+    @submit_button.prop('value', 'Submit')
+    @submit_button.click @save_answer
+    #@begin:!如果是上传就隐文本框
+    #@date:2013-11-02
+    if @accept_file_upload== "True"
+       @answer_area.hide()
+    #@end
     if @task_number==1 and @child_state=='assessing'
-      @prompt_hide()
+       @prompt_show()
     if @child_state == 'done'
       @rubric_wrapper.hide()
+      #@begin:Mockup code
+      #@date:2013-11-02
+      #@save_button.hide()
+      #@end
     if @child_type=="openended"
       @skip_button.hide()
     if @allow_reset=="True"
-      @show_combined_rubric_current()
+      #@begin:Mockup code
+      #@date:2013-11-02
+      #@show_combined_rubric_current()
+      #@end
       @reset_button.show()
       @submit_button.hide()
       @answer_area.attr("disabled", true)
@@ -288,18 +352,51 @@ class @CombinedOpenEnded
       @hint_area.attr('disabled', true)
       if @task_number<@task_count
         @gentle_alert "Your score did not meet the criteria to move to the next step."
+    #@begin:!状态为initial_submit的初始化，其中有对tinyMCE的初始化
+    #@date:2013-11-02
+    else if @child_state == 'initial_submit'
+      
+      @answer_area.attr("disabled", false)
+      @rubric_wrapper.hide()
+      @setup_file_upload()
+      tinyMCE_class_init(@location)
+      #@begin:prompt show
+      #@date:2013-11-02
+      @prompt_show()
+      #@end
+    #@begin:!状态为initial_submit的初始化，其中有对tinyMCE的初始化
+    #@date:2013-11-02
     else if @child_state == 'initial'
       @answer_area.attr("disabled", false)
-      @submit_button.prop('value', 'Submit')
-      @submit_button.click @save_answer
       @setup_file_upload()
+      tinyMCE_class_init(@location)
+      #@begin:prompt show
+      #@date:2013-11-02
+      @prompt_show()
+      #@end
+    #@end
     else if @child_state == 'assessing'
-      @answer_area.attr("disabled", true)
-      @replace_text_inputs()
+      #@begin:!上传文件和非上传在assessing的区别
+      @setup_file_upload()
+      if @accept_file_upload== "True"
+         @answer_area.hide()
+      else
+        @answer_area.attr("disabled", true)
+        @replace_text_inputs()
+      #@end
       @hide_file_upload()
-      @submit_button.prop('value', 'Submit assessment')
+      @rubric_wrapper.show()
+      #@begin:!submit_button改名
+      #@date:2013-11-02
+      @submit_button.prop('value', 'Enter')
+      #@end
       @submit_button.click @save_assessment
       @submit_button.attr("disabled",true)
+      #@begin:!删除answer_area
+      #@date:2013-11-02
+      $("#"+@answer_area.attr("id")+"_parent").remove()
+      #@end
+      @prompt_show()
       if @child_type == "openended"
         @submit_button.hide()
         @queueing()
@@ -319,12 +416,32 @@ class @CombinedOpenEnded
       else
         @submit_button.click @message_post
     else if @child_state == 'done'
-      @show_combined_rubric_current()
+      #@begin:!安装文件上传相关
+      #@date:2013-11-02
+      @setup_file_upload()
+      #@end
+      #@begin:!去除rubric_current
+      #@date:2013-11-02
+      #@show_combined_rubric_current()
+      #@end
       @rubric_wrapper.hide()
       @answer_area.attr("disabled", true)
-      @replace_text_inputs()
+      #@begin:!上传文件和非上传在done的区别
+      #@date:2013-11-02
+      if @accept_file_upload== "True"
+         @answer_area.hide()
+      else
+        @answer_area.attr("disabled", true)
+        @replace_text_inputs()
+      #@end
+      #@begin:!上传控件隐藏
+      #@date:2013-11-02
+      @hide_file_upload()
+      #@end
       @hint_area.attr('disabled', true)
       @submit_button.hide()
+    
+      @reset_button.show()
       if @child_type=="openended"
         @skip_button.hide()
       if @task_number<@task_count
@@ -349,18 +466,55 @@ class @CombinedOpenEnded
       @find_assessment_elements()
       @rebind()
       answer_area_div = @$(@answer_area_div_sel)
-      answer_area_div.html(response.student_response)
+      answer_area_div.val(response.student_response)
     else
-      @can_upload_files = pre_can_upload_files
       @gentle_alert response.error
 
   save_answer: (event) =>
-    @submit_button.attr("disabled",true)
-    @submit_button.hide()
+    @ora_loading.show()
+    @rubric_wrapper.show()
     event.preventDefault()
     @answer_area.attr("disabled", true)
     max_filesize = 2*1000*1000 #2MB
-    pre_can_upload_files = @can_upload_files
+    #pre_can_upload_files = @can_upload_files
+    if @child_state == 'initial' or @child_state == 'initial_submit'
+      files = ""
+      if @can_upload_files == true
+        files = @$(@file_upload_box_sel)[0].files[0]
+        if files!= undefined and files!= null
+          if files.size > max_filesize
+            @can_upload_files = false
+            files = ""
+        else
+          @can_upload_files = false
+      fd = new FormData()
+      fd.append('student_answer', @get_text())
+      fd.append('student_file', "")
+      fd.append('can_upload_files', @can_upload_files)
+      settings =
+        type: "POST"
+        data: fd
+        processData: false
+        contentType: false
+        async: false
+        success: (response) =>
+          @ora_loading.hide()
+          if response==null
+            alert("Network error. Please try again.")
+            return false
+          @replace_answer(response)
+
+      $.ajaxWithPrefix("#{@ajax_url}/save_answer",settings)
+    else
+      @errors_area.html(@out_of_sync_message)
+  #@begin:!保存不提交
+  #@date:2013-11-02    
+  save_text: (event) =>
+    #event.preventDefault()
+    @ora_loading.show()
+    @child_state = 'initial'
+    max_filesize = 2*1000*1000 #2MB
+    #pre_can_upload_files = @can_upload_files
     if @child_state == 'initial'
       files = ""
       if @can_upload_files == true
@@ -371,10 +525,13 @@ class @CombinedOpenEnded
             files = ""
         else
           @can_upload_files = false
-
       fd = new FormData()
-      fd.append('student_answer', @answer_area.val())
+      #fd.append('student_answer', @answer_area.val())
+      fd.append('student_answer', @get_text())
+      #alert("val_"+$(".mceEditor").attr("id")+"___"+@answer_area.attr("id"))
+      #alert("mc"+tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML)
       fd.append('student_file', files)
+      fd.append('file_info', '')
       fd.append('can_upload_files', @can_upload_files)
 
       settings =
@@ -384,12 +541,210 @@ class @CombinedOpenEnded
         contentType: false
         async: false
         success: (response) =>
-          @replace_answer(response)
+          @ora_loading.hide()
+          alert("Successfully saved!")
 
-      $.ajaxWithPrefix("#{@ajax_url}/save_answer",settings)
+      $.ajaxWithPrefix("#{@ajax_url}/save_text",settings)
     else
       @errors_area.html(@out_of_sync_message)
+  #@end
+  #@begin:!文件上传
+  #@date:2013-11-02
+  upload_file: (event) =>
+    event.preventDefault()
+    @ora_loading.show()
+    @child_state = 'initial'
+    max_filesize = 2*1000*1000 #2MB
+    #pre_can_upload_files = @can_upload_files
+    @can_upload_files = true
+    if @child_state == 'initial'
+      files = ""
+      if @can_upload_files == true
+        files = @$(@file_upload_box_sel)[0].files[0]
+        if files != undefined 
+          if files.size > max_filesize
+            @can_upload_files = false
+            files = ""
+            alert("File is too large.")
+            @$(@file_upload_box_sel)[0].files=[]
+            return false
+        else
+          @can_upload_files = false
 
+      fd = new FormData()
+      #fd.append('student_answer', @answer_area.val())
+      fd.append('student_answer', @get_text())
+      #alert("val_"+$(".mceEditor").attr("id")+"___"+@answer_area.attr("id"))
+      #alert("mc"+tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML)
+      fd.append('student_file', files)
+      fd.append('file_info', '')
+      fd.append('can_upload_files', @can_upload_files)
+
+      settings =
+        type: "POST"
+        data: fd
+        processData: false
+        contentType: false
+        async: false
+        success: (response) =>
+          @ora_loading.hide()
+          if response==null
+            alert("Network error. Please try again.")
+            return false
+          if response.success==true
+            alert("Upload success!")
+          else
+            alert("Upload fail")
+          file_item=$(response.file_info).text().split("##")
+          if /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file_item[1])
+              #insertImageItem=" | <a class='insert_image_btn' href='javascript:void(0)'>Insert Image</a>"
+              insertImageItem=""
+          else
+              insertImageItem=""
+          file_upload_item=$("<div class='file_upload_item' style='margin:10px;'>"+file_item[1]+" | <a href="+"'"+file_item[0]+"'"+" target='_blank'>Download</a><span class='file_upload_item_edit'> | <a class='remove_btn' href='javascript:void(0)' rel="+"'"+$(response.file_info).text()+"'"+">Remove</a>"+insertImageItem+"</span></div>")
+          @file_upload_list.append(file_upload_item)
+          file_upload_item.find(".remove_btn").click(()=> 
+              @remove_file(file_item[2],file_upload_item)
+          )
+          #file_upload_item.find(".insert_image_btn").click(()=> 
+              #tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML+="<img src="+"'"+file_item[0]+"'/>"
+          #)
+          answer_area_val=$("<div>"+@answer_area.val()+"</div>")
+          answer_area_val.find(".file_url").each((i,ele) =>
+            $(ele).remove()
+          )
+          @file_upload_list.find(".file_upload_item").each((i,ele) =>
+            answer_area_val.append("<div class='file_url' style='display:none'>"+$(ele).find(".remove_btn")[0].rel+"</div>")
+            #@answer_area.val(tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML)
+          )
+          #@answer_area.val(tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML)
+          @answer_area.val(answer_area_val.html())
+      $.ajaxWithPrefix("#{@ajax_url}/save_text",settings)
+    else
+      @errors_area.html(@out_of_sync_message)
+  #@end
+  #@begin:!上传文件删除
+  #@date:2013-11-02
+  remove_file: (key,item) =>
+    @ora_loading.show()
+    fd = new FormData()
+    fd.append('file_key', key)
+    settings =
+        type: "POST"
+        data: fd
+        processData: false
+        contentType: false
+        async: false
+        success: (response) =>
+          if response==null
+            @ora_loading.hide()
+            alert("Network error. Please try again.")
+            return false
+          item.remove()
+          answer_area_val=$("<div>"+@answer_area.val()+"</div>")
+          answer_area_val.find(".file_url").each((i,ele) =>
+            $(ele).remove();
+          )
+          #@answer_area.val(answer_area_val.html())
+          @file_upload_list.find(".file_upload_item").each((i,ele) =>
+            answer_area_val.append("<div class='file_url' style='display:none'>"+$(ele).find(".remove_btn")[0].rel+"</div>")
+          )
+          @answer_area.val(answer_area_val.html())
+          @remove_confirm()
+    $.ajaxWithPrefix("#{@ajax_url}/remove_file",settings)
+  #@end
+  #@begin:!上传的文件删除后确认并保存
+  #@date:2013-11-02
+  remove_confirm:() =>
+    @child_state = 'initial'
+    max_filesize = 2*1000*1000 #2MB
+    #pre_can_upload_files = @can_upload_files
+    if @child_state == 'initial'
+      files = ""
+      if @can_upload_files == true
+        files = @$(@file_upload_box_sel)[0].files[0]
+        if files != undefined
+          if files.size > max_filesize
+            @can_upload_files = false
+            files = ""
+        else
+          @can_upload_files = false
+      fd = new FormData()
+      #fd.append('student_answer', @answer_area.val())
+      fd.append('student_answer', @get_text())
+      #alert("val_"+$(".mceEditor").attr("id")+"___"+@answer_area.attr("id"))
+      #alert("mc"+tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML)
+      fd.append('student_file', '')
+      fd.append('file_info', '')
+      fd.append('can_upload_files', @can_upload_files)
+      settings =
+        type: "POST"
+        data: fd
+        processData: false
+        contentType: false
+        async: false
+        success: (response) =>
+          @ora_loading.hide()
+          alert("Remove success")
+
+      $.ajaxWithPrefix("#{@ajax_url}/save_text",settings)
+    else
+      @errors_area.html(@out_of_sync_message)
+  #@end
+  #@begin:!上传文件成功后确认并保存
+  #@date:2013-11-02
+  upload_confirm:() =>
+    max_filesize = 2*1000*1000 #2MB
+    #pre_can_upload_files = @can_upload_files
+    if @child_state == 'initial' or @child_state == 'initial_submit'
+      files = ""
+      if @can_upload_files == true
+        files = @$(@file_upload_box_sel)[0].files[0]
+        if files != undefined
+          if files.size > max_filesize
+            @can_upload_files = false
+            files = ""
+        else
+          @can_upload_files = false
+      fd = new FormData()
+      #fd.append('student_answer', @answer_area.val())
+      fd.append('student_answer', @get_text())
+      #alert("val_"+$(".mceEditor").attr("id")+"___"+@answer_area.attr("id"))
+      #alert("mc"+tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML)
+      fd.append('student_file', '')
+      fd.append('file_info', '')
+      fd.append('can_upload_files', @can_upload_files)
+      settings =
+        type: "POST"
+        data: fd
+        processData: false
+        contentType: false
+        async: false
+        success: (response) =>
+          @ora_loading.hide()
+          alert("Upload success!")
+
+
+      $.ajaxWithPrefix("#{@ajax_url}/save_text",settings)
+    else
+      @errors_area.html(@out_of_sync_message)
+  #@end
+  #@begin:!获得文本
+  #@date:2013-11-02
+  get_text:()=>
+    if @accept_file_upload!= "True"
+      return tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML
+    else
+      return @answer_area.val()
+  #@end
+  #@begin:!设置文本
+  #@date:2013-11-02
+  set_text:(val)=>
+    if @accept_file_upload!= "True"
+      return tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML=val
+    else
+      return @answer_area.val(val)
+  #@end
   keydown_handler: (event) =>
     #Previously, responses were submitted when hitting enter.  Add in a modifier that ensures that ctrl+enter is needed.
     if event.which == 17 && @is_ctrl==false
@@ -403,6 +758,7 @@ class @CombinedOpenEnded
       @is_ctrl=false
 
   save_assessment: (event) =>
+    @ora_loading.show()
     @submit_button.attr("disabled",true)
     @submit_button.hide()
     event.preventDefault()
@@ -411,6 +767,12 @@ class @CombinedOpenEnded
       score_list = @rub.get_score_list()
       data = {'assessment' : checked_assessment, 'score_list' : score_list}
       $.postWithPrefix "#{@ajax_url}/save_assessment", data, (response) =>
+        #@begin:!ora_loading 隐藏 \response为空的处理
+        #@date:2013-11-02
+        @ora_loading.hide()
+        if response==null
+            alert("Network error. Please try again.")
+            return false
         if response.success
           @child_state = response.state
 
@@ -457,6 +819,12 @@ class @CombinedOpenEnded
     event.preventDefault()
     if @child_state == 'done' or @allow_reset=="True"
       $.postWithPrefix "#{@ajax_url}/reset", {}, (response) =>
+        @ora_loading.hide()
+        if @accept_file_upload== "True"
+            @answer_area.hide()
+        if response==null
+            alert("Network error. Please try again.")
+            return false
         if response.success
           @answer_area.val('')
           @rubric_wrapper.html('')
@@ -467,6 +835,7 @@ class @CombinedOpenEnded
           @allow_reset="False"
           @reinitialize(@element)
           @has_been_reset = true
+          tinyMCE_sate(0)
           @rebind()
           @reset_button.hide()
         else
@@ -517,30 +886,57 @@ class @CombinedOpenEnded
         @reload()
       else
         window.queuePollerID = window.setTimeout(@poll, 10000)
-
+  #@begin:!配置文件上传
+  #@date:2013-11-02 
   setup_file_upload: =>
     if @accept_file_upload == "True"
+      @answer_area.hide()
       if window.File and window.FileReader and window.FileList and window.Blob
         @can_upload_files = true
-        @file_upload_area.html('<input type="file" class="file-upload-box"><img class="file-upload-preview" src="#" alt="Uploaded image" />')
+        @file_upload_area.html('<input type="file" class="file-upload-box"><img class="file-upload-preview" src="#" alt="" />')
         @file_upload_area.show()
         @$(@file_upload_preview_sel).hide()
         @$(@file_upload_box_sel).change @preview_image
+        #alert($("<div>"+@answer_area.val()+"</div>").find(".file_url").length)
+        @file_upload_list.empty()
+        $("<div>"+@answer_area.val()+"</div>").find(".file_url").each((i,ele) =>
+            file_item=$(ele).text().split("##")
+            if /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file_item[1])
+              #insertImageItem=" | <a class='insert_image_btn' href='javascript:void(0)'>Insert Image</a>"
+              insertImageItem=""
+            else
+              insertImageItem=""
+            file_upload_item=$("<div class='file_upload_item' style='margin:10px;'>"+file_item[1]+" | <a href="+"'"+file_item[0]+"'"+" target='_blank'>Download</a><span class='file_upload_item_edit'> | <a class='remove_btn' href='javascript:void(0)' rel="+"'"+$(ele).text()+"'"+">Remove</a>"+insertImageItem+"</span></div>")
+            @file_upload_list.append(file_upload_item)
+            file_upload_item.find(".remove_btn").click(()=> 
+                @remove_file(file_item[2],file_upload_item)
+            )
+            #file_upload_item.find(".insert_image_btn").click(()=> 
+                #tinyMCE.getInstanceById(@answer_area.attr("id")).getBody().innerHTML+="<img src="+"'"+file_item[0]+"'/>"
+            #)
+            
+        )
       else
         @gentle_alert 'File uploads are required for this question, but are not supported in this browser. Try the newest version of google chrome.  Alternatively, if you have uploaded the image to the web, you can paste a link to it into the answer box.'
-
+  #@end
   hide_file_upload: =>
     if @accept_file_upload == "True"
       @file_upload_area.hide()
+      @file_upload_list.find(".file_upload_item_edit").hide()
 
   replace_text_inputs: =>
     answer_class = @answer_area.attr('class')
     answer_id = @answer_area.attr('id')
-    answer_val = @answer_area.val()
+    #@begin:!取值HTML输出
+    #@date:2013-11-02 
+    if $("#"+@answer_area.attr("id")+"_parent").length>0
+      answer_val = @get_text()
+    else
+      answer_val = @answer_area.val()
+    #@end
     new_text = ''
     new_text = "<div class='#{answer_class}' id='#{answer_id}'>#{answer_val}</div>"
     @answer_area.replaceWith(new_text)
-
   # wrap this so that it can be mocked
   reload: ->
     @reinitialize()
@@ -618,7 +1014,7 @@ class @CombinedOpenEnded
     if @$(@file_upload_preview_sel).attr(name)
       @$(@file_upload_preview_sel)[0].removeAttribute(name)
 
-  preview_image: () =>
+  preview_image: (event) =>
     if @$(@file_upload_box_sel)[0].files && @$(@file_upload_box_sel)[0].files[0]
       reader = new FileReader()
       reader.onload = (e) =>
@@ -638,6 +1034,10 @@ class @CombinedOpenEnded
         @$(@file_upload_preview_sel)[0].height = height_px/scale_factor
         @$(@file_upload_preview_sel).show()
       reader.readAsDataURL(@$(@file_upload_box_sel)[0].files[0])
+      #@begin:upload
+      #@date:2013-11-02 
+      @upload_file(event)
+      #@end
 
   toggle_rubric: (event) =>
     info_rubric_elements = @$(@info_rubric_elements_sel)

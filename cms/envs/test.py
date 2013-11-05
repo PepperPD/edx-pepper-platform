@@ -90,8 +90,10 @@ DATABASES = {
         'NAME': TEST_ROOT / "db" / "cms.db",
     },
 }
-
-LMS_BASE = "localhost:8000"
+#@begin:!我们把lms port 定为8111, 这里相应修改
+#@date:2013-11-02
+LMS_BASE = "localhost:8111"
+#@end
 MITX_FEATURES['PREVIEW_LMS_BASE'] = "preview"
 
 CACHES = {

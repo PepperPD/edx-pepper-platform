@@ -123,6 +123,10 @@ def edit_subsection(request, location):
     return render_to_response(
         'edit_subsection.html',
         {
+#@begin:!给模板传递location变量,方便生成某些url,比如预览
+#@date:2013-11-02        
+           'location':location,
+#@end
            'subsection': item,
            'context_course': course,
            'new_unit_category': 'vertical',

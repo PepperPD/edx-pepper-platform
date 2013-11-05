@@ -63,11 +63,15 @@ define(['logme'], function (logme) {
 
             // When there are no more hidden draggables, prevent from
             // scrolling infinitely.
+
+            /*@begin:!边界判断常数改为[147]*/
+            /*@date:2013-11-02*/
             if (showElLeftMargin > -147) {
                 return;
             }
 
             showElLeftMargin += 147;
+            /*@end*/
 
             // We scroll by changing the 'margin-left' CSS property smoothly.
             state.sliderEl.animate({
@@ -159,11 +163,14 @@ define(['logme'], function (logme) {
 
             // When there are no more hidden draggables, prevent from
             // scrolling infinitely.
+            /*@begin:!边界判断常数改为[147]*/
+            /*@date:2013-11-02*/
             if (showElLeftMargin < -147 * (state.numDraggablesInSlider - 5)) {
                 return;
             }
 
             showElLeftMargin -= 147;
+            /*@end*/
 
             // We scroll by changing the 'margin-left' CSS property smoothly.
             state.sliderEl.animate({
@@ -192,13 +199,15 @@ define(['logme'], function (logme) {
         function updateArrowOpacity() {
             moveLeftEl.children('div').css('opacity', '1');
             moveRightEl.children('div').css('opacity', '1');
-
+            /*@begin:!边界判断常数改为[147]*/
+            /*@date:2013-11-02*/
             if (showElLeftMargin < -147 * (state.numDraggablesInSlider - 5)) {
                 moveRightEl.children('div').css('opacity', '.4');
             }
             if (showElLeftMargin > -147) {
                 moveLeftEl.children('div').css('opacity', '.4');
             }
+            /*@end*/
         }
     } // End-of: function Scroller(state)
 }); // End-of: define(['logme'], function (logme) {

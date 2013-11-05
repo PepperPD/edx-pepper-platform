@@ -3,7 +3,13 @@
 <%! from time import strftime %>
 <%inherit file="main.html" />
 <%namespace name='static' file='static_content.html'/>
+
+<!--@begin:add css link-->
+<!--@date:2013-11-02-->
 <link rel="stylesheet" type="text/css"  href="/static/tmp-resource/css/ppd-general01.css"/>
+<!--@end-->
+
+
 <style type="text/css" media="screen">
   #page-nav,#page-footer{
   width:960px;
@@ -12,6 +18,8 @@
   div.block{
   background:#E6F4FB;width:172px;height:300px;float:left;padding:10px;
   }
+	/*@begin:add new style for the video*/
+	/*@date:2013-11-02*/
 	#ppd_video_image
 	{	
 		width:281px;
@@ -36,7 +44,6 @@
 		left:300px;
 		top:78px;
 		border:1px solid;
-		position:absolute;
 		display:none;
 	}
 	#ppd_video_close
@@ -48,7 +55,11 @@
 		cursor:pointer;
 		z-index:1;
 	}
+	/*@end*/
 </style>
+
+<!--@begin:add jq/js code to control the video-->
+<!--@date:2013-11-02-->
 <script>
 jQuery(function($){
 	var id_ppd_video_main = document.getElementById('ppd_video_main');
@@ -74,9 +85,17 @@ jQuery(function($){
 	}
 });
 </script>
+<!--@end-->
+
 <div id="main-div" style="text-align:center;background:#f5f5f5">
   <div id="div_all" style="width:960px;border:0px solid;margin:auto;height:1220px;background:#fff;">
-    <div style="height:195px;background:url(static/images/ppd-general-banner01.png);">
+    <!--@begin:use new image name(ppd-...); modify the style-->
+	<!--@date:2013-11-02-->
+	<div style="height:195px;background:url(static/images/ppd-general-banner01.png);">
+	<!--@end-->
+
+		<!--@begin:use html text to replace the text on the picture; add code(class="_...") to modify font style-->
+		<!--@date:2013-11-02-->
 		<div style="width:580px;float:left">
 			<section class="_banner_title_font">
 				BUILDING CORE CONFIDENCE
@@ -87,18 +106,29 @@ jQuery(function($){
 				</section>
 			</section>
 		</div>
+		<!--@end-->
+
+		
+		<!--@begin:add preview of the video-->
+		<!--@date:2013-11-02-->
 		<div id="ppd_video_image">
 			<img id="ppd_video_image_img" src="static/images/ppd-whatis-videoimage01.png" width="267" height="150"/>
 		</div>
+		<!--@end-->
     </div>
 	
+	<!--@begin:add the video-->
+	<!--@date:2013-11-02-->
 	<div id="ppd_video_main">
         <div id="ppd_video_close">
         	<img src="static/images/ppd-video-close01.png" width="20" height="20"/>
         </div>
         <video id="sampleMovie" src="static/video/ppd-whatis-banner01.mp4" controls></video>
     </div>
-   
+   	<!--@end-->
+
+   	<!--@begin:modify some content and style-->
+	<!--@date:2013-11-02-->
     <div style="padding-bottom:20px;width:930px;">
 		<div style="width:450px;margin:auto;float:left;padding-left:20px;">
 			<img src="static/images/ppd-whatispepper-content01.jpg" style="padding-top:10px;" alt="" />
@@ -150,5 +180,6 @@ jQuery(function($){
 			</section>
 		</div>
 	</div>
+	<!--@end-->
   </div>
 </div>

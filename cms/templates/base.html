@@ -55,7 +55,11 @@
     <script src="${static.url('js/vendor/jquery.smooth-scroll.min.js')}"></script>
     <script type="text/javascript" src="${static.url('js/vendor/CodeMirror/htmlmixed.js')}"></script>
     <script type="text/javascript" src="${static.url('js/vendor/CodeMirror/css.js')}"></script>
-    <script type="text/javascript" src="//www.youtube.com/player_api"></script>
+
+<!--@begin:!加载youtub的api在中国会让页面加载极慢，这里暂时注释掉-->
+<!--@date:2013-11-02-->
+<!--    <script type="text/javascript" src="//www.youtube.com/player_api"></script> -->
+<!--@end-->
 
     <script src="${static.url('js/views/feedback.js')}"></script>
     % if context_course:

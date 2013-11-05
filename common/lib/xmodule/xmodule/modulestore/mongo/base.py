@@ -493,6 +493,12 @@ class MongoModuleStore(ModuleStoreBase):
 
         # if we are loading a course object, if we're not prefetching children (depth != 0) then don't
         # bother with the metadata inheritance
+        #@begin:On testing code
+        #@date:2013-11-02      
+        import logging
+        log = logging.getLogger("tracking")
+        log.debug("get_items===============================\n:"+str(items)+"============")
+        #@end
         return [self._load_item(item, data_cache,
                 apply_cached_metadata=(item['location']['category'] != 'course' or depth != 0)) for item in items]
 
@@ -567,7 +573,26 @@ class MongoModuleStore(ModuleStoreBase):
             calls to get_children() to cache. None indicates to cache all descendents.
         """
         return self.get_item(location, depth=depth)
-
+    #@begin:On testing code
+    #@date:2013-11-02  
+    def get_orphans(self, course_id, location, depth=0):
+        """
+        Return an array all of the locations for orphans in the course.
+        """
+        all_items = self.collection.find({
+            '_id.org': location.org,
+            '_id.course': location.course,
+            #'_id.category': {'$nin': detached_categories}
+            #'_id.category':'combinedopenended'
+            '_id.category': {'$in': ['combinedopenended']}
+        })
+        #return list(all_items)
+        module = self._load_items(list(all_items), depth)
+        import logging
+        log = logging.getLogger("tracking")
+        log.debug("get_orphans===============================\n:"+str(module)+"============")
+        return module
+    #@end
     def get_items(self, location, course_id=None, depth=0):
         items = self.collection.find(
             location_to_query(location),

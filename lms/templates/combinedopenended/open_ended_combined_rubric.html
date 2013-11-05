@@ -19,12 +19,18 @@
                         %else:
                             <label class="choicegroup_incorrect wrapper-score-selection"></label>
                         %endif
+                            <!--@begin:!去掉分数显示-->
+                            <!--@date:2013-11-02-->
                             <span class="wrappable">${option['text']}</span>
+                            <!--@end-->
                         </label>
                     %else:
                         <label class="rubric-elements-info">
                             <span class="wrapper-score-selection"> </span>
+                            <!--@begin:!去掉分数显示-->
+                            <!--@date:2013-11-02-->
                             <span class="wrappable">${option['text']}</span>
+                            <!--@end-->
                         </label>
                     %endif
                 </div>

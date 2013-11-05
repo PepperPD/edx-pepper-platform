@@ -100,9 +100,10 @@ def index(request, extra_context={}, user=None):
 
     courses = get_courses(None, domain=domain)
     courses = sort_by_announcement(courses)
-
-    context = {'courses': courses}
-
+#@begin:!帮助模板知道所在页面是首页,方便隐藏dashboard按钮
+#@date:2013-11-02        
+    context = {'courses': courses,'index':True}
+#@end
     context.update(extra_context)
     return render_to_response('index.html', context)
 
@@ -262,6 +263,7 @@ def register_user(request, extra_context=None):
 @ensure_csrf_cookie
 def dashboard(request):
     user = request.user
+    
 
     # Build our courses list for the user, but ignore any courses that no longer
     # exist (because the course IDs have changed). Still, we don't delete those
@@ -269,7 +271,12 @@ def dashboard(request):
     courses = []
     for enrollment in CourseEnrollment.enrollments_for_user(user):
         try:
-            courses.append(course_from_id(enrollment.course_id))
+#@begin:!dashboard上的课程列表增加显示用户登记课程时间
+#@date:2013-11-02                    
+            c=course_from_id(enrollment.course_id)
+            c.student_enrollment_date=enrollment.created
+            courses.append(c)
+#@end            
         except ItemNotFoundError:
             log.error("User {0} enrolled in non-existent course {1}"
                       .format(user.username, enrollment.course_id))
@@ -568,7 +575,18 @@ def _do_create_account(post_vars):
     registration.register(user)
 
     profile = UserProfile(user=user)
-    profile.name = post_vars['name']
+#@begin:!保存用户注册的个人信息时增加了一些字段
+#@date:2013-11-02        
+    # profile.name = post_vars['name']
+    profile.first_name = post_vars['first_name']
+    profile.last_name = post_vars['last_name']
+
+    profile.major_subject_area_id = post_vars['major_subject_area_id']
+    profile.grade_level_id = post_vars['grade_level_id']
+    profile.district_id = post_vars['district_id']
+    profile.school_id = post_vars['school_id']
+    profile.years_in_education_id = post_vars['years_in_education_id']
+#@end    
     profile.level_of_education = post_vars.get('level_of_education')
     profile.gender = post_vars.get('gender')
     profile.mailing_address = post_vars.get('mailing_address')
@@ -608,27 +626,36 @@ def create_account(request, post_override=None):
             email = eamap.external_email
         except ValidationError:
             email = post_vars.get('email', '')
+            
         if eamap.external_name.strip() == '':
-            name = post_vars.get('name', '')
+#@begin:!由于修改了用户表字段，name改由first_name+last_name合成
+#@date:2013-11-02        
+            name = post_vars.get('first_name', '') + post_vars.get('last_name', '')
+#@end            
         else:
             name = eamap.external_name
+            
         password = eamap.internal_password
         post_vars = dict(post_vars.items())
         post_vars.update(dict(email=email, name=name, password=password))
         log.debug(u'In create_account with external_auth: user = %s, email=%s', name, email)
 
     # Confirm we have a properly formed request
-    for a in ['username', 'email', 'password', 'name']:
+#@begin:!由于修改了用户表字段，提交用户信息时需要检查更多字段的有效性
+#@date:2013-11-02           
+    for a in ['username', 'email', 'password', 'first_name','last_name']:
+#@end   
         if a not in post_vars:
             js['value'] = _("Error (401 {field}). E-mail us.").format(field=a)
             js['field'] = a
             return HttpResponse(json.dumps(js))
-
-    if post_vars.get('honor_code', 'false') != u'true':
-        js['value'] = _("To enroll, you must follow the honor code.").format(field=a)
-        js['field'] = 'honor_code'
-        return HttpResponse(json.dumps(js))
-
+#@begin:!注册表单的honor_code未用，以下提交检查注释掉
+#@date:2013-11-02   
+    # if post_vars.get('honor_code', 'false') != u'true':
+    #     js['value'] = _("To enroll, you must follow the honor code.").format(field=a)
+    #     js['field'] = 'honor_code'
+    #     return HttpResponse(json.dumps(js))
+#@end   
     # Can't have terms of service for certain SHIB users, like at Stanford
     tos_not_required = settings.MITX_FEATURES.get("AUTH_USE_SHIB") \
                        and settings.MITX_FEATURES.get('SHIB_DISABLE_TOS') \
@@ -645,23 +672,50 @@ def create_account(request, post_override=None):
     # TODO: Confirm e-mail is not from a generic domain (mailinator, etc.)? Not sure if
     # this is a good idea
     # TODO: Check password is sane
-
-    required_post_vars = ['username', 'email', 'name', 'password', 'terms_of_service', 'honor_code']
+#@begin:!由于修改了用户表字段，提交用户信息时需要检查更多字段的有效性
+#@date:2013-11-02   
+    required_post_vars = ['username', 'email', 'first_name','last_name', 'password', 'terms_of_service']     # 'honor_code'
+#@end
     if tos_not_required:
-        required_post_vars = ['username', 'email', 'name', 'password', 'honor_code']
-
+#@begin:!注册表单的honor_code未用，以下提交检查注释掉
+#@date:2013-11-02           
+        required_post_vars = ['username', 'email', 'first_name','last_name', 'password'] # 'honor_code'
+#@end
     for a in required_post_vars:
         if len(post_vars[a]) < 2:
             error_str = {'username': 'Username must be minimum of two characters long.',
                          'email': 'A properly formatted e-mail is required.',
-                         'name': 'Your legal name must be a minimum of two characters long.',
+#@begin:!由于修改了用户表字段，提交用户信息时需要检查更多字段的有效性
+#@date:2013-11-02                            
+                         'first_name': 'Your first name must be a minimum of two characters long.',
+                         'last_name': 'Your last name must be a minimum of two characters long.',
+#@end                         
                          'password': 'A valid password is required.',
                          'terms_of_service': 'Accepting Terms of Service is required.',
-                         'honor_code': 'Agreeing to the Honor Code is required.'}
+#@begin:!注册表单的honor_code未用
+#@date:2013-11-02                               
+                         'honor_code': 'Agreeing to the Honor Code is required.',
+                         }
+#@end            
             js['value'] = error_str[a]
             js['field'] = a
             return HttpResponse(json.dumps(js))
-
+#@begin:!由于修改了用户表字段，提交用户信息时需要检查更多字段的有效性
+#@date:2013-11-02  
+    required_post_vars_dropdown=['major_subject_area_id','grade_level_id','district_id', 'school_id','years_in_education_id']
+    for a in required_post_vars_dropdown:
+        if len(post_vars[a]) < 1:
+            error_str = {
+                         'major_subject_area_id':'Major Subject Area is required',
+                         'grade_level_id':'Grade Level-heck is required',
+                         'district_id':'District is required',
+                         'school_id':'School is required',
+                         'years_in_education_id':'Number of Years in Education is required'
+                         }
+            js['value'] = error_str[a] 
+            js['field'] = a
+            return HttpResponse(json.dumps(js))    
+#@end 
     try:
         validate_email(post_vars['email'])
     except ValidationError:
@@ -681,8 +735,11 @@ def create_account(request, post_override=None):
     if isinstance(ret, HttpResponse):  # if there was an error then return that
         return ret
     (user, profile, registration) = ret
-
-    d = {'name': post_vars['name'],
+#@begin:!由于修改了用户表字段，发送确认邮件时名字要改用first_name和last_name
+#@date:2013-11-02
+    d = {'first_name': post_vars['first_name'],
+         'last_name': post_vars['last_name'],
+#@end          
          'key': registration.activation_key,
          }
 
@@ -761,7 +818,6 @@ def create_account(request, post_override=None):
                         httponly=None)
     return response
 
-
 def exam_registration_info(user, course):
     """ Returns a Registration object if the user is currently registered for a current
     exam of the course.  Returns None if the user is not registered, or if there is no
@@ -778,7 +834,6 @@ def exam_registration_info(user, course):
     else:
         registration = None
     return registration
-
 
 @login_required
 @ensure_csrf_cookie
@@ -822,7 +877,6 @@ def begin_exam_registration(request, course_id):
                }
 
     return render_to_response('test_center_register.html', context)
-
 
 @ensure_csrf_cookie
 def create_exam_registration(request, post_override=None):
@@ -927,7 +981,6 @@ def create_exam_registration(request, post_override=None):
     js = {'success': True}
     return HttpResponse(json.dumps(js), mimetype="application/json")
 
-
 def auto_auth(request):
     """
     Automatically logs the user in with a generated random credentials
@@ -979,7 +1032,6 @@ def auto_auth(request):
     # return empty success
     return HttpResponse('')
 
-
 @ensure_csrf_cookie
 def activate_account(request, key):
     """When link in activation e-mail is clicked"""
@@ -1014,7 +1066,6 @@ def activate_account(request, key):
         )
     return HttpResponse(_("Unknown error. Please e-mail us to let us know how it happened."))
 
-
 @ensure_csrf_cookie
 def password_reset(request):
     """ Attempts to send a password reset e-mail. """
@@ -1032,7 +1083,6 @@ def password_reset(request):
     else:
         return HttpResponse(json.dumps({'success': False,
                                         'error': _('Invalid e-mail or user')}))
-
 
 def password_reset_confirm_wrapper(
     request,
@@ -1057,7 +1107,6 @@ def password_reset_confirm_wrapper(
         request, uidb36=uidb36, token=token, extra_context=extra_context
     )
 
-
 def reactivation_email_for_user(user):
     try:
         reg = Registration.objects.get(user=user)
@@ -1080,7 +1129,6 @@ def reactivation_email_for_user(user):
 
     return HttpResponse(json.dumps({'success': True}))
 
-
 @ensure_csrf_cookie
 def change_email_request(request):
     """ AJAX call from the profile page. User wants a new e-mail.
@@ -1090,11 +1138,12 @@ def change_email_request(request):
         raise Http404
 
     user = request.user
-
-    if not user.check_password(request.POST['password']):
-        return HttpResponse(json.dumps({'success': False,
-                                        'error': _('Invalid password')}))
-
+#@begin:!用户修改邮箱时不再需要确认密码
+#@date:2013-11-02  
+    # if not user.check_password(request.POST['password']):
+    #     return HttpResponse(json.dumps({'success': False,
+    #                                     'error': _('Invalid password')}))
+#@end
     new_email = request.POST['new_email']
     try:
         validate_email(new_email)
@@ -1134,7 +1183,6 @@ def change_email_request(request):
     _res = send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [pec.new_email])
 
     return HttpResponse(json.dumps({'success': True}))
-
 
 @ensure_csrf_cookie
 @transaction.commit_manually
@@ -1195,7 +1243,6 @@ def confirm_email_change(request, key):
         transaction.rollback()
         raise
 
-
 @ensure_csrf_cookie
 def change_name_request(request):
     """ Log a request for a new name. """
@@ -1207,10 +1254,22 @@ def change_name_request(request):
     except PendingNameChange.DoesNotExist:
         pnc = PendingNameChange()
     pnc.user = request.user
-    pnc.new_name = request.POST['new_name']
+#@begin:!增加字段相应修改
+#@date:2013-11-02        
+    pnc.new_first_name = request.POST['new_first_name']
+    pnc.new_last_name = request.POST['new_last_name']
+#@end
     pnc.rationale = request.POST['rationale']
-    if len(pnc.new_name) < 2:
-        return HttpResponse(json.dumps({'success': False, 'error': _('Name required')}))
+#@begin:!增加字段相应修改
+#@date:2013-11-02      
+    if len(pnc.new_first_name) < 2:
+        return HttpResponse(json.dumps({'success': False, 'error': _('First Name required')}))
+    if len(pnc.new_last_name) < 2:
+        return HttpResponse(json.dumps({'success': False, 'error': _('Last Name required')}))
+
+
+    pnc.new_name = "%s %s" % (request.POST['new_first_name'], request.POST['new_last_name'])
+#@end
     pnc.save()
 
     # The following automatically accepts name change requests. Remove this to
@@ -1218,7 +1277,6 @@ def change_name_request(request):
     accept_name_change_by_id(pnc.id)
 
     return HttpResponse(json.dumps({'success': True}))
-
 
 @ensure_csrf_cookie
 def pending_name_changes(request):
@@ -1235,7 +1293,6 @@ def pending_name_changes(request):
                         'cid': c.id} for c in changes]}
     return render_to_response('name_changes.html', js)
 
-
 @ensure_csrf_cookie
 def reject_name_change(request):
     """ JSON: Name change process. Course staff clicks 'reject' on a given name change """
@@ -1249,7 +1306,6 @@ def reject_name_change(request):
 
     pnc.delete()
     return HttpResponse(json.dumps({'success': True}))
-
 
 def accept_name_change_by_id(id):
     try:
@@ -1268,11 +1324,15 @@ def accept_name_change_by_id(id):
     up.set_meta(meta)
 
     up.name = pnc.new_name
+#@begin:!增加字段相应修改
+#@date:2013-11-02          
+    up.first_name = pnc.new_first_name
+    up.last_name = pnc.new_last_name
+#@end
     up.save()
     pnc.delete()
 
     return HttpResponse(json.dumps({'success': True}))
-
 
 @ensure_csrf_cookie
 def accept_name_change(request):
@@ -1286,7 +1346,6 @@ def accept_name_change(request):
         raise Http404
 
     return accept_name_change_by_id(int(request.POST['id']))
-
 
 @require_POST
 @login_required
@@ -1309,3 +1368,57 @@ def change_email_settings(request):
         track.views.server_track(request, "change-email-settings", {"receive_emails": "no", "course": course_id}, page='dashboard')
 
     return HttpResponse(json.dumps({'success': True}))
+#@begin:!dashboard增加更多字段的修改提交处理
+#@date:2013-11-02        
+def download_certificate(request):
+    return render_to_response("download_certificate.html", {})
+
+def latest_news(request):
+    return render_to_response("latest_news.html", {})
+
+
+def change_school_request(request):
+    up = UserProfile.objects.get(user=request.user)  
+    if 'school_id' in request.POST:
+        up.school_id = request.POST['school_id']
+    up.save()
+
+    return HttpResponse(json.dumps({'success': True, 'school_id':up.school_id,
+                                    'location': up.location}))
+
+def change_grade_level_request(request):
+    up = UserProfile.objects.get(user=request.user) 
+    if 'grade_level_id' in request.POST:
+        up.grade_level_id = request.POST['grade_level_id']
+    up.save()
+
+    return HttpResponse(json.dumps({'success': True,
+                                    'location': up.location}))
+
+def change_major_subject_area_request(request):
+    up = UserProfile.objects.get(user=request.user) 
+    if 'major_subject_area_id' in request.POST:
+        up.major_subject_area_id = request.POST['major_subject_area_id']
+    up.save()
+
+    return HttpResponse(json.dumps({'success': True,
+                                    'location': up.location}))
+
+def change_years_in_education_request(request):
+    up = UserProfile.objects.get(user=request.user) 
+    if 'years_in_education_id' in request.POST:
+        up.years_in_education_id = request.POST['years_in_education_id']
+    up.save()
+
+    return HttpResponse(json.dumps({'success': True,
+                                    'location': up.location}))
+
+def change_bio_request(request):
+    up = UserProfile.objects.get(user=request.user)
+    if 'bio' in request.POST:
+        up.bio = request.POST['bio']
+    up.save()
+
+    return HttpResponse(json.dumps({'success': True,
+                                    'location': up.location, }))
+#@end
