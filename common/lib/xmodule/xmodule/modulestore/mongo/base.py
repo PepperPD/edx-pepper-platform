@@ -493,7 +493,7 @@ class MongoModuleStore(ModuleStoreBase):
 
         # if we are loading a course object, if we're not prefetching children (depth != 0) then don't
         # bother with the metadata inheritance
-        #@begin:On testing code
+        #@begin:code in test and will be replaced later
         #@date:2013-11-02      
         import logging
         log = logging.getLogger("tracking")
@@ -573,7 +573,7 @@ class MongoModuleStore(ModuleStoreBase):
             calls to get_children() to cache. None indicates to cache all descendents.
         """
         return self.get_item(location, depth=depth)
-    #@begin:On testing code
+    #@begin:code in test and will be replaced later
     #@date:2013-11-02  
     def get_orphans(self, course_id, location, depth=0):
         """

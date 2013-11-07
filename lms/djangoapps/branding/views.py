@@ -16,7 +16,7 @@ def index(request):
     '''
     Redirects to main page -- info page if user authenticated, or marketing if not
     '''
-#@begin:!登录后也允许访问首页
+#@begin:Able to visit homepage after login
 #@date:2013-11-02        
     # if settings.COURSEWARE_ENABLED and request.user.is_authenticated():
     #     return redirect(reverse('dashboard'))
@@ -55,7 +55,7 @@ def courses(request):
     #  marketing and edge are enabled
     return courseware.views.courses(request)
 
-#@begin:!新增页面的view
+#@begin:View of the new added page
 #@date:2013-11-02        
 @ensure_csrf_cookie
 @cache_if_anonymous

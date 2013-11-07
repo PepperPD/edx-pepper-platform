@@ -36,7 +36,7 @@ from xmodule.modulestore.inheritance import InheritanceMixin
 ################################### FEATURES ###################################
 # The display name of the platform to be used in templates/emails/etc.
 
-#@begin:!修改本平台程序名
+#@begin:Change the platform name to be Pepper
 #@date:2013-11-02        
 PLATFORM_NAME = "Pepper"
 #@end

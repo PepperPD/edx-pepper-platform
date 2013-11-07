@@ -6,7 +6,7 @@
 
 <%! from django.core.urlresolvers import reverse %>
 <%! from django.utils.translation import ugettext as _ %>
-<!--@begin:!新增页面样式-->
+<!--@begin:New added page style-->
 <!--@date:2013-11-02-->
 <link rel="stylesheet" type="text/css"  href="/static/tmp-resource/css/ppd-general01.css"/>
 <style>
@@ -174,8 +174,8 @@
         <legend class="sr">${_('Required Information')}</legend>
 
         <ol class="list-input">
-#@begin:!表单修改
-#@date:2013-11-02        
+<!--@begin:Change the form-->
+<!--@date:2013-11-02-->
           <li class="field text" id="field-email">
             <label for="email" style="font-weight:bold;">${_('E-mail')}</label>
             <input class="" id="email" type="email" name="email" value="" placeholder="example: username@domain.com" required aria-required="true" />
@@ -185,7 +185,7 @@
             <input id="password" type="password" name="password" value="" required aria-required="true" />
             <span class="tip tip-input">
               <a href="#forgot-password-modal" rel="leanModal" class="blue pwd-reset action action-forgotpw">${_('Forgot password?')}</a>
-#@end                        
+<!--@end-->                  
             </span>
           </li>
         </ol>
@@ -195,12 +195,12 @@
         <legend class="sr">${_('Account Preferences')}</legend>
 
         <ol class="list-input">
-#@begin:!修改Remember me字体
-#@date:2013-11-02              
+<!--@begin:Change the font of Remember me
+<!--@date:2013-11-02-->              
           <li class="field checkbox" id="field-remember">
             <input id="remember-yes" type="checkbox" name="remember" value="true" />
             <label for="remember-yes" style="font-weight:bold;">${_('Remember me')}</label>
-#@end                
+<!--@end-->                
           </li>
         </ol>
       </fieldset>
@@ -230,13 +230,13 @@
     </div> -->
     % endif
 
-<!--@begin:!右侧文字修改-->
+<!--@begin:Change the left side text-->
 <!--@date:2013-11-02-->
     <div class="cta cta-help" style="line-height:25px;color:#666;">
       <h3 style="font-size:16px;color:#3461ad;">Not yet a member of pepper?<br>There are two ways to join.</h3><br>
 <!--@end-->
       
-      <!--@begin:!暂时注释掉，信用卡支付功能好用后再恢复-->
+      <!--@begin:Removed for now and will implement when e-transaction works-->
       <!--@date:2013-11-02-->
       <!--
       To sign up your teachers please<br> contact

@@ -1,0 +1,66 @@
+<%! from django.utils.translation import ugettext as _ %>
+
+<%namespace name='static' file='../static_content.html'/>
+<%!
+   from django.core.urlresolvers import reverse
+   from courseware.courses import course_image_url, get_course_about_section
+   from courseware.access import has_access
+   from certificates.models import CertificateStatuses
+   from xmodule.modulestore import MONGO_MODULESTORE_TYPE
+   from xmodule.modulestore.django import modulestore
+   import json
+   %>
+
+<%static:js group='main_vendor'/>
+<%static:js group='application'/>
+
+<style type="text/css" media="screen">
+  #form-table{border:none;}
+  #form-table td{border:none;padding-top:20px;}
+  #form-table td.label{text-align:right;}
+  table.datalist td{padding:5px;}
+  div.nav a{font-size:18px;background:#ddd;padding:5px;}
+  div.nav{margin-bottom:10px;text-align:left;}
+</style>
+<script type="text/javascript" src="/static/js/vendor/jquery.form.js" charset="utf-8"></script>
+<div style="text-align:center;">
+  <div style="width:960px;margin:auto;">
+    <div class="nav">
+      <a href="/district" style="background:#fa0">district</a>
+      <a href="/contract">contract</a>
+      <a href="/school">school</a>
+    </div>
+    <div style="background:#ddd;padding:20px;text-align:left;">
+      %if ui=='list':
+      <table class="datalist" width="100%" border="1" style="border-collapse:collapse;">
+        <tr>
+          <td style="width:0px;"></td>
+          <td>id</td>
+          <td>name</td>
+          <td>state</td>
+          <td>district</td>
+          <td>number of licences</td>
+          <td>status</td>
+          <td>date</td>
+        </tr>
+        % for  item in districts:          
+        <tr>
+          <td><input type="checkbox" name="id" value="" /></td>
+          <td>${item.id}</td>
+          <td>${item.name}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        % endfor          
+      </table>
+      <div style="padding:5px;text-align:right;">
+        <input type="button" onclick="window.location=''" value="Add New District" />
+        <input type="button" name="" value="Delete Selected" />
+      </div>
+      %endif
+    </div>  
+  </div>
+</div>

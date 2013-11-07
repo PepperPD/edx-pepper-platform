@@ -123,7 +123,7 @@ def edit_subsection(request, location):
     return render_to_response(
         'edit_subsection.html',
         {
-#@begin:!给模板传递location变量,方便生成某些url,比如预览
+#@begin:Pass location variable to the module and generate certain urls, such as preview
 #@date:2013-11-02        
            'location':location,
 #@end

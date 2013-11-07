@@ -20,7 +20,7 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
 
 <%! import json%>
 
-<!--@begin:!增加页面样式-->
+<!--@begin:Add page style-->
 <!--@date:2013-11-02-->
 <link rel="stylesheet" type="text/css"  href="/static/tmp-resource/css/ppd-general01.css"/>
 <style>
@@ -122,7 +122,7 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
       var $submitButton = $('form .form-actions #submit');
 
       if(enable) {
-/*@begin:!登录按钮文字修改*/
+/*@begin:Change the button text in login page*/
 /*@date:2013-11-02*/
         $submitButton.
           removeClass('is-disabled').
@@ -141,7 +141,7 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
   </script>
 </%block>
 
-<!--@begin:!登录页横幅修改-->
+<!--@begin:Change the banding image in Login page-->
 <!--@date:2013-11-02-->
 <div style="margin:0 auto;width:960px;height:125px;background:url(static/images/ppd-login-banner01.png);border-bottom:1px solid #000;">
 	<section class="_banner_title_font">
@@ -180,7 +180,7 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
 
         <ol class="list-input">
           <li class="field text" id="field-email">
-<!--@begin:!注册页，邮箱星号去掉，字体加粗-->
+<!--@begin:Registraction page: remove some asterisks and change the font to bold-->
 <!--@date:2013-11-02-->
             <label for="email" style="font-weight:bold;">${_('E-mail')}</label>
             <input class="" id="email" type="email" name="email" value="" placeholder="${_('example: username@domain.com')}" required aria-required="true" />
@@ -196,7 +196,7 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
             <input id="username" type="text" name="username" value="" placeholder="${_('example: JaneDoe')}" required aria-required="true" />
             <span class="tip tip-input">${_('Will be shown in any discussions or forums you participate in')}</span>
           </li>
-<!--@begin:!注册页，添加字段-->
+<!--@begin:Registraction page: add more fields-->
 <!--@date:2013-11-02-->
 
           <!-- <li class="field required text" id="field-name"> -->
@@ -509,13 +509,13 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
       % if self.stanford_theme_enabled():
         <p>${_("You will receive an activation email.  You must click on the activation link to complete the process.  Don't see the email?  Check your spam folder and mark emails from class.stanford.edu as 'not spam', since you'll want to be able to receive email from your courses.")}</p>
       % else:
-<!--@begin:!右侧文字修改-->
+<!--@begin:Change the text on the right side-->
 <!--@date:2013-11-02-->
       <p>${_("As part of joining {platform_name}, you will receive a confirmation email.  Don’t see the email? Check your spam folder and mark {platform_name} emails as “not spam.”  At {platform_name}, we communicate mostly through email.").format(platform_name=settings.PLATFORM_NAME)}</p>
 <!--@end-->              
       % endif
     </div>
-<!--@begin:!不再显示faq-->
+<!--@begin:Remove the default FQA-->
 <!--@date:2013-11-02-->
     % if False and settings.MKTG_URL_LINK_MAP.get('FAQ'):
       <div class="cta cta-help">

@@ -74,7 +74,7 @@ class LMSLinksTestCase(TestCase):
         link = utils.get_lms_link_for_item(location)
         self.assertEquals(
             link,
-#@begin:!我们把lms port 定为8111, 这里相应修改
+#@begin:Change lms port to 8111 and the code
 #@date:2013-11-02        
             "//localhost:8111/courses/mitX/101/test/jump_to/i4x://mitX/101/course/test"
 #@end

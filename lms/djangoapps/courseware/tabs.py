@@ -58,7 +58,7 @@ TabImpl = namedtuple('TabImpl', 'validator generator')
 
 def _courseware(tab, user, course, active_page):
     link = reverse('courseware', args=[course.id])
-#@begin:!课程标签由Courseware修改为My Course
+#@begin:Change the static tag of Courseware to My Course
 #@date:2013-11-02        
     return [CourseTab('My Course', link, active_page == "courseware")]
 #@end    
@@ -299,7 +299,7 @@ def get_course_tabs(user, course, active_page):
 
 
     tabs = []
-#@begin:!修改课程页标签显示
+#@begin:Change the static tags in the courses
 #@date:2013-11-02        
     for tab in course.tabs[:]:
         # expect handlers to return lists--handles things that are turned off
@@ -330,7 +330,7 @@ def get_course_tabs(user, course, active_page):
     #                           active_page == 'instructor'))
 
 
-#@begin:!课程页添加标签
+#@begin:Add new static tags in courses
 #@date:2013-11-02 
     tabs.append(CourseTab('People',
                           reverse('people', args=[course.id]),
@@ -378,7 +378,7 @@ def get_default_tabs(user, course, active_page):
     tabs.extend(_course_info({'name': 'Course Info'}, user, course, active_page))
 
 
-#@begin:!课程默认标签添加progress
+#@begin:Change the static tag of Progress to the front of Discussion
 #@date:2013-11-02 
     if user.is_authenticated() and not course.hide_progress_tab:
         tabs.extend(_progress({'name': 'Progress'}, user, course, active_page))
@@ -392,12 +392,12 @@ def get_default_tabs(user, course, active_page):
 
     discussion_link = get_discussion_link(course)
     if discussion_link:
-#@begin:!修改Discussion标签名称
+#@begin:Change the static tag to Discussion
 #@date:2013-11-02        
         tabs.append(CourseTab('Course Discussion', discussion_link, active_page == 'discussion'))
 #@end
     tabs.extend(_wiki({'name': 'Wiki', 'type': 'wiki'}, user, course, active_page))
-#@begin:!此处删掉了Progress
+#@begin:Delete the static tag of Progress
 #@date:2013-11-02        
 #@end
     if has_access(user, course, 'staff'):

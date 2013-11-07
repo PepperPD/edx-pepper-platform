@@ -36,7 +36,7 @@ class SelfAssessmentModule(openendedchild.OpenEndedChild):
     ASSESSING = 'assessing'
     REQUEST_HINT = 'request_hint'
     DONE = 'done'
-    #@begin:！增加一种状态 reset后answer内容不为空
+    #@begin:Add a state so that answer will not be empty after clicking reset
     #@date:2013-11-02       
     INITIAL_SUBMIT = 'initial_submit'
     #@end
@@ -64,7 +64,7 @@ class SelfAssessmentModule(openendedchild.OpenEndedChild):
             previous_answer = latest if latest is not None else ''
         else:
             previous_answer = ''
-        #@begin:On testing code
+        #@begin:code in test and will be replaced later
         #@date:2013-11-02       
         """ if self.child_state != self.INITIAL_SUBMIT:
             previous_answer = previous_answer.replace("\n","<br>")
@@ -194,7 +194,7 @@ class SelfAssessmentModule(openendedchild.OpenEndedChild):
         closed, msg = self.check_if_closed()
         if closed:
             return msg
-        #@begin:!保留以前逻辑
+        #@begin:Save the previous logic
         #@date:2013-11-02     
         '''if self.child_state != self.INITIAL:
             return self.out_of_sync_error(data)
@@ -218,7 +218,7 @@ class SelfAssessmentModule(openendedchild.OpenEndedChild):
             'error': error_message,
             'student_response': data['student_answer'].replace("\n","<br/>")
         }
-    #@begin:!保存但不进入下一状态
+    #@begin:Save the state without further processing
     #@date:2013-11-02  
     def save_text(self, data, system):
         """
@@ -237,7 +237,7 @@ class SelfAssessmentModule(openendedchild.OpenEndedChild):
         if closed:
             return msg
 
-        #@begin:!保留以前逻辑
+        #@begin:Save the previous logic
         #@date:2013-11-02     
         '''if self.child_state != self.INITIAL:
             return self.out_of_sync_error(data)

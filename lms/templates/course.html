@@ -1,7 +1,7 @@
 <%namespace name='static' file='static_content.html'/>
 <%namespace file='main.html' import="stanford_theme_enabled"/>
 
-<!--@begin:!课程列表页面，这页的内容全部替换为效果图所示-->
+<!--@begin:Show wireframes before implementing the functionalities of the page-->
 <!--@date:2013-11-02-->
 <style type="text/css" media="screen">
   #page-nav,#page-footer{width:960px;}
@@ -62,7 +62,7 @@ from courseware.courses import course_image_url, get_course_about_section
 		<!--@end-->
 	</div>
 	<div style="float:left;height:150px;margin:6px;">
-		<!--@begin:!在原代码基础上，修改了未开课的新课程加new标记的功能-->
+		<!--@begin:Change the place and look of New icon in course directory page-->
 		<!--@date:2013-11-02-->
 		%if course.is_newish:
 			<div style="font-size:12px;margin:10px;background:#99cc33;color:#fff;padding:4px;width:27px;">NEW</div>

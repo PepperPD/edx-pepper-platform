@@ -19,48 +19,48 @@ import json
 from student.models import Contract,UserProfile,Registration,District
 
 from django import forms
-import csv  
+import csv
+
+def index(request):
+    return render_to_response('manage/district.html', {"districts":District.objects.all(),"ui":"list"})
 
 def create(request):
-    return render_to_response('manage/contract.html', {"contracts":Contract.objects.all(),"contract_from":True})
+    return render_to_response('manage/district.html', {"districts":District.objects.all(),"district_from":True})
 
-def modify(request,contract_id=''):
-    from student.models import Contract
-    contract={}
-    if contract_id:
-        c=Contract.objects.get(id=contract_id)
-        contract['id']=c.id
-        contract['name']=c.name
-        contract['district_id']=c.district_id
-        contract['term_months']=c.term_months
-        contract['licenses']=c.licenses
-    return render_to_response('manage/contract.html',
-                              {"contracts":Contract.objects.all(),
-                               "contract":contract,
-                               "contract_from":True})
+def modify(request,district_id=''):
+    from student.models import District
+    district={}
+    if district_id:
+        c=District.objects.get(id=district_id)
+        district['id']=c.id
+        district['name']=c.name
+        district['district_id']=c.district_id
+        district['term_months']=c.term_months
+        district['licenses']=c.licenses
+    return render_to_response('manage/district.html',
+                              {"districts":District.objects.all(),
+                               "district":district,
+                               "district_from":True})
 
 @ensure_csrf_cookie
 @cache_if_anonymous
 def import_user(request):
-    contract={}
-    return render_to_response('manage/contract.html', {"contracts":Contract.objects.all(), "import_from":True})
-
-def index(request):
-    return render_to_response('manage/contract.html', {"contracts":Contract.objects.all(),"ui":"list"})
+    district={}
+    return render_to_response('manage/district.html', {"districts":District.objects.all(), "import_from":True})
 
 @ensure_csrf_cookie
 @cache_if_anonymous
 def submit(request):
     if not request.user.is_authenticated:
         raise Http404
-    contract_id = request.POST['contract_id']
+    district_id = request.POST['district_id']
     name = request.POST['name']
     district_id = request.POST['district_id']
     term_months = request.POST['term_months']
     licenses = request.POST['licenses']
     try:
-        c=Contract()
-        c.id=contract_id
+        c=District()
+        c.id=district_id
         c.name=name
         c.district_id=district_id
         c.term_months=term_months
@@ -72,17 +72,17 @@ def submit(request):
         return HttpResponse(json.dumps({'success': False,'error':'?'}))
     return HttpResponse(json.dumps({'success': True}))
 
-CONTRACT_CVS_COL_CONTRACT_ID=0
-CONTRACT_CVS_COL_DISTRICT_ID=1
-CONTRACT_CVS_COL_EMAIL=2
-CONTRACT_CVS_COL_USERNAME=3
-CONTRACT_CVS_COUNT_COL=4  
+DISTRICT_CVS_COL_DISTRICT_ID=0
+DISTRICT_CVS_COL_DISTRICT_ID=1
+DISTRICT_CVS_COL_EMAIL=2
+DISTRICT_CVS_COL_USERNAME=3
+DISTRICT_CVS_COUNT_COL=4  
 
 def validate_cvs_line(line):
-    contract_id=line[CONTRACT_CVS_COL_CONTRACT_ID]
-    district_id=line[CONTRACT_CVS_COL_DISTRICT_ID]
-    email=line[CONTRACT_CVS_COL_EMAIL]
-    username=line[CONTRACT_CVS_COL_USERNAME]
+    district_id=line[DISTRICT_CVS_COL_DISTRICT_ID]
+    district_id=line[DISTRICT_CVS_COL_DISTRICT_ID]
+    email=line[DISTRICT_CVS_COL_EMAIL]
+    username=line[DISTRICT_CVS_COL_USERNAME]
 
     exist=False
     
@@ -91,13 +91,13 @@ def validate_cvs_line(line):
     for item in line:
         if len(item.strip()):
             n=n+1
-    if n != CONTRACT_CVS_COUNT_COL:
+    if n != DISTRICT_CVS_COUNT_COL:
         raise Exception("Wrong fields count.")
 
-    # check contract_id
-    # don't use objects.get, that throw 'Contract matching query does not exist'
-    if len(Contract.objects.filter(id=int(contract_id)))!=1:
-        raise Exception("Invalide contract id.")
+    # check district_id
+    # don't use objects.get, that throw 'District matching query does not exist'
+    if len(District.objects.filter(id=int(district_id)))!=1:
+        raise Exception("Invalide district id.")
 
     # check district_id
     # don't use objects.get, that throw 'District matching query does not exist'
@@ -117,7 +117,7 @@ def validate_cvs_line(line):
 
     return exist
 
-def contract_users(reqest):
+def district_users(reqest):
     pass
 
 @ensure_csrf_cookie
@@ -140,10 +140,10 @@ def import_user_submit(request):
                     count_exist=count_exist+1
                     continue
         
-                contract_id=line[CONTRACT_CVS_COL_CONTRACT_ID]
-                district_id=line[CONTRACT_CVS_COL_DISTRICT_ID]
-                email=line[CONTRACT_CVS_COL_EMAIL]
-                username=line[CONTRACT_CVS_COL_USERNAME]
+                district_id=line[DISTRICT_CVS_COL_DISTRICT_ID]
+                district_id=line[DISTRICT_CVS_COL_DISTRICT_ID]
+                email=line[DISTRICT_CVS_COL_EMAIL]
+                username=line[DISTRICT_CVS_COL_USERNAME]
                 user = User(username=username, email=email, is_active=True)
                 user.set_password(username)
                 registration = Registration()
@@ -159,7 +159,7 @@ def import_user_submit(request):
                 
                 registration.register(user)
                 profile=UserProfile(user=user)
-                profile.contract_id=contract_id
+                profile.district_id=district_id
                 profile.district_id=district_id
                 profile.email=email
                 profile.username=username
@@ -199,19 +199,19 @@ def import_user_submit(request):
 
 @ensure_csrf_cookie
 @cache_if_anonymous
-def submit_contract(request):
+def submit_district(request):
     if not request.user.is_authenticated:
         raise Http404
-    contract_id = request.POST['contract_id']
+    district_id = request.POST['district_id']
     name = request.POST['name']
     district_id = request.POST['district_id']
     term_months = request.POST['term_months']
     licenses = request.POST['licenses']
     try:
-        from student.models import Contract
-        c=Contract()
-        if len(contract_id):
-            c.id=contract_id
+        from student.models import District
+        c=District()
+        if len(district_id):
+            c.id=district_id
         c.name=name
         c.district_id=district_id
         c.state_id=state_id

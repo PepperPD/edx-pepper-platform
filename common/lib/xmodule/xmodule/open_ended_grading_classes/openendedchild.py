@@ -85,7 +85,7 @@ class OpenEndedChild(object):
     STATE_VERSION = 1
 
     # states
-    #@begin:!增加一种状态 initial_submit
+    #@begin:Add initial_submit state
     #@date:2013-11-02   
     INITIAL = 'initial'
     INITIAL_SUBMIT = 'initial_submit'
@@ -213,7 +213,7 @@ class OpenEndedChild(object):
         if not self.child_history:
             return ""
         return self.child_history[-1].get('post_assessment', "")
-    #@begin:!更新edx新版代码
+    #@begin:Update edx code
     #@date:2013-11-02    
     '''
     def sanitize_html(answer):
@@ -387,7 +387,7 @@ class OpenEndedChild(object):
         score = self.get_score()['score']
         correctness = 'correct' if self.is_submission_correct(score) else 'incorrect'
         return correctness
-    #@begin:!upload / delete to s3
+    #@begin:Upload to / delete from s3
     #@date:2013-11-02  
     '''
     def upload_image_to_s3(self, image_data):
@@ -447,7 +447,7 @@ class OpenEndedChild(object):
             success = False
 
         return success
-    #@begin:!文件类型修改,以前只是图片
+    #@begin:Change the file type that was image
     #@date:2013-11-02  
     '''
     def check_for_image_and_upload(self, data):
@@ -495,7 +495,7 @@ class OpenEndedChild(object):
 
         return has_file_to_upload, image_tag
     #@end
-    #@begin:!返回一个含有文件信息的节点
+    #@begin:Return node with file info
     #@date:2013-11-02  
     '''
     def generate_image_tag_from_url(self, s3_public_url, image_name):
@@ -554,7 +554,7 @@ class OpenEndedChild(object):
 
         return overall_success, data
     '''
-    #@begin:!去除类型限制
+    #@begin:Remove the type constraints
     #@date:2013-11-02  
     def append_file_link_to_student_answer(self, data):
         """
@@ -595,7 +595,7 @@ class OpenEndedChild(object):
 
         return success, error_message, data
     #@end
-    #@begin:!返回文件信息
+    #@begin:Return file info
     #@date:2013-11-02  
     def append_file_link_to_file_info(self, data):
         """
@@ -636,7 +636,7 @@ class OpenEndedChild(object):
 
         return success, error_message, data
     #@end
-    #@begin:!Checks for urls in a string
+    #@begin:Check for urls in a string
     #@date:2013-11-02  
     '''
     def check_for_url_in_text(self, string):

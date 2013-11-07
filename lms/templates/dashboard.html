@@ -7,14 +7,14 @@
   from certificates.models import CertificateStatuses
   from xmodule.modulestore import MONGO_MODULESTORE_TYPE
   from xmodule.modulestore.django import modulestore
-#@begin:!引入新增字段的数据源
+#@begin:Import new fields data
 #@date:2013-11-02        
   from prop_dict.models import schools,districts,subject_areas,grade_levels,years_in_educations
   from prop_dict.models import get_district,get_school,get_grade_level,get_subject_area,get_years_in_education
 #@end
 %>
 
-<!--@begin:!隐藏本页的dashboard按钮-->
+<!--@begin:Hide Dashboard button in this page-->
 <!--@date:2013-11-02-->
 <style type="text/css" media="screen">
   #btn-dashboard{display:none;}
@@ -24,7 +24,7 @@
 <%inherit file="main.html" />
 <%namespace name='static' file='static_content.html'/>
 <%block name="title"><title>${_("Dashboard")}</title></%block>
-<!--@begin:!新增页面样式-->
+<!--@begin:Add new page style-->
 <!--@date:2013-11-02-->
 <style type="text/css" media="screen">
   #submit:hover,#submit_email_change:hover {
@@ -74,7 +74,7 @@
 
 <%block name="js_extra">
   <script type="text/javascript">
-/*@begin:点击grade_level表单上的圆形按钮*/
+/*@begin:Click the round button in grade_level table*/
 /*@date:2013-11-02*/
      function click_grade_btn(i){
             var vals={}
@@ -137,7 +137,7 @@
 
     $("#change_email_form").submit(function(){
       var new_email = $('#new_email_field').val();
-/*@begin:!修改email不再需要核对密码*/
+/*@begin:Do not need to confirm passowrd when changing email*/
 /*@date:2013-11-02*/
 
       //var new_password = $('#new_email_password').val();
@@ -161,7 +161,7 @@
     });
 
     $("#change_name_form").submit(function(){
-/*@begin:!修改用户现在拆分成两个字段*/
+/*@begin:Change the name to two fileds*/
 /*@date:2013-11-02*/
 
       var new_first_name = $('#new_first_name_field').val();
@@ -183,7 +183,7 @@
        return false;
     });
 
-<!--@begin:!dashboard新增的多个字段的修改表单的处理-->
+<!--@begin:Process the newly added fields in dashboard-->
 <!--@date:2013-11-02-->
 
      $("#change_school_form").find("select[name='school_id']").val('${user.profile.school_id}')
@@ -250,7 +250,6 @@
 
    $("#change_years_in_education_form").submit(function(){
       var years_in_education_id = $(this.years_in_education_id).val();
-     alert(years_in_education_id)
       $.post('${reverse("change_years_in_education")}',
              {"years_in_education_id":years_in_education_id},
              function(data) {
@@ -317,7 +316,7 @@
     <section class="user-info">
       <ul>
         <li>
-<!--@begin:!个人信息显示：用户名-->
+<!--@begin:Profile：username-->
 <!--@date:2013-11-02-->
           <span class="title">
             <div class="icon name-icon"></div>${_("Name")}:
@@ -326,7 +325,7 @@
 <!--@end-->          
             
         </li>
-<!--@begin:!个人信息显示：头像-->
+<!--@begin:Profile：user photo-->
 <!--@date:2013-11-02-->
         <li>
           <span class="title"><div class="icon email-icon" style="background-image:url(/static/images/portal-icons/photo.png) !important;">
@@ -353,7 +352,7 @@
         </li>
         % endif
 
-<!--@begin:!个人信息显示：去掉一些内容不再显示-->
+<!--@begin:Profile: remove some not needed info-->
 <!--@date:2013-11-02-->        
       <!-----------------------------------------------------------------------------------
 		<li>
@@ -404,7 +403,7 @@
         -->
 <!--@end-->
 
-<!--@begin:!个人信息显示：新增的一些信息-->
+<!--@begin:Add some profile info-->
 <!--@date:2013-11-02-->  
 		<li>
 
@@ -470,7 +469,7 @@
 <!--@end-->        
         
       </ul>
-<!--@begin:!个人信息显示：去掉的一些信息-->
+<!--@begin: Remove some profile info-->
 <!--@date:2013-11-02-->  
          <!-- <div style="width:180px">  <span>City:Aptos</span>  <span style="float:right;padding-right:0px;">(<a href="" class="">edit</a>)</span></div> -->
          <!-- <div style="width:180px"><span>State:Ca</span>  <span style="float:right;padding-right:0px;">(<a href="" class="">edit</a>)</span></div> -->
@@ -488,7 +487,7 @@
 
   </section>
 
-<!--@begin:!dashboard专用的一些样式-->
+<!--@begin:The styles used only in Dashboard-->
 <!--@date:2013-11-02--> 
 <style type="text/css" media="screen">
   a.btnx:hover {
@@ -539,7 +538,7 @@
 </style>
 <!--@end-->
 
-<!--@begin:!dashboard上新增lastnews-->
+<!--@begin:Add lastnew in Dashboard-->
 <!--@date:2013-11-02-->
 <section class="my-courses">
   <header style="width:886px;height:246px;margin:auto;position:relative;border-bottom:none;margin-bottom:30px;">
@@ -555,7 +554,7 @@
       <h2>${_("Current Courses")}</h2>
     </header>
     % if len(courses) > 0:
-<!--@begin:!dashboard课程列表显示形式修改-->
+<!--@begin:Change the disply of the courses list in Dashboard-->
 <!--@date:2013-11-02-->    
       % for i,course in enumerate(courses):
 
@@ -582,7 +581,7 @@
           % endif
           <section class="info">
             <hgroup>
-<!--@begin:!dashboard课程列表显示形式修改-->
+<!--@begin:Change the display of current courses in Dashboard-->
 <!--@date:2013-11-02-->                 
 
               <p class="date-block">
@@ -754,7 +753,7 @@
              </ul>
       % endfor
     % endif
-<!--@begin:!显示已完成的课程的列表-->
+<!--@begin:Shown completed course list-->
 <!--@date:2013-11-02-->
           <header>
             <h2>${_("Completed Courses")}</h2>
@@ -765,7 +764,7 @@
 </section>
 </section>
 
-<!--@begin:!新增个人信息字段的修改表单-->
+<!--@begin:Chagne the table with new profile fields-->
 <!--@date:2013-11-02-->
 <section id="change_photo" class="modal">
   <div class="inner-wrapper">
@@ -985,7 +984,7 @@
       <input name="course_id" id="email_settings_course_id" type="hidden" />
       <label>${_("Receive course emails")} <input type="checkbox" id="receive_emails" name="receive_emails" /></label>
       <div class="submit">
-<!--@begin:!Email Settings表单的按钮颜色修改-->
+<!--@begin:Chagne the button bolor in Email Settings table-->
 <!--@date:2013-11-02-->
         <input type="submit" class="btnx" id="submit" value="Save Settings" />
 <!--@end-->        
@@ -1044,7 +1043,7 @@
 <section id="change_email" class="modal">
   <div class="inner-wrapper">
     <header>
-<!--@begin:!邮箱修改表单标题调整-->
+<!--@begin:Change the title of email table-->
 <!--@date:2013-11-02-->            
       <h2><span id="change_email_title">${_("Change My Email")}</span></h2>
 <!--@end-->
@@ -1055,7 +1054,7 @@
         <div id="change_email_error" class="modal-form-error"> </div>
         <fieldset>
           <div class="input-group">
-<!--@begin:!邮箱修改表单调整-->
+<!--@begin:Change the email table-->
 <!--@date:2013-11-02-->            
             <label>${_('Please edit your email below:')}</label>
             <input id="new_email_field" type="email" value="${user.email}" />
@@ -1079,7 +1078,7 @@
     </div>
   </div>
 </section>
-<!--@begin:!头像上传表单-->
+<!--@begin:User photo upload table-->
 <!--@date:2013-11-02-->
 <section id="apply_picture_change" class="modal">
   <div class="inner-wrapper">
@@ -1123,7 +1122,7 @@
         <fieldset>
           <div class="input-group">
             <label>${_("Enter your desired full name, as it will appear on the {platform} certificates:").format(platform=settings.PLATFORM_NAME)}</label>
-<!--@begin:!用户名修改表单-->
+<!--@begin:Username change table-->
 <!--@date:2013-11-02-->            
             <br/><br/>
             

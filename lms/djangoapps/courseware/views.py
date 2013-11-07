@@ -330,7 +330,7 @@ def index(request, course_id, chapter=None, section=None,
             'staff_access': staff_access,
             'masquerade': masq,
             'xqa_server': settings.MITX_FEATURES.get('USE_XQA_SERVER', 'http://xqa:server@content-qa.mitx.mit.edu/xqa'),
-#@begin:!帮助模板知道是在首页
+#@begin:Inform the template that it is in homepage
 #@date:2013-11-02        
             'is_index':'True'
 #@end                        
@@ -612,7 +612,7 @@ def course_about(request, course_id):
 
 @ensure_csrf_cookie
 @cache_if_anonymous
-#@begin:!课程关于页面的view
+#@begin:View of the course
 #@date:2013-11-02        
 def cabout(request, course_id):
     
@@ -795,7 +795,7 @@ def submission_history(request, course_id, student_username, location):
 
     return render_to_response('courseware/submission_history.html', context)
 
-#@begin:!新增页面的view
+#@begin:View of the newly added page
 #@date:2013-11-02        
 def my_course_portfolio(request, course_id, student_id=None):
     return False

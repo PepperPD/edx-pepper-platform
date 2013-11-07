@@ -100,7 +100,7 @@ def index(request, extra_context={}, user=None):
 
     courses = get_courses(None, domain=domain)
     courses = sort_by_announcement(courses)
-#@begin:!帮助模板知道所在页面是首页,方便隐藏dashboard按钮
+#@begin:Hide Dashboard button when the current page is homepage
 #@date:2013-11-02        
     context = {'courses': courses,'index':True}
 #@end
@@ -271,7 +271,7 @@ def dashboard(request):
     courses = []
     for enrollment in CourseEnrollment.enrollments_for_user(user):
         try:
-#@begin:!dashboard上的课程列表增加显示用户登记课程时间
+#@begin:Show the enrollment date of each course in Dashboard
 #@date:2013-11-02                    
             c=course_from_id(enrollment.course_id)
             c.student_enrollment_date=enrollment.created
@@ -575,7 +575,7 @@ def _do_create_account(post_vars):
     registration.register(user)
 
     profile = UserProfile(user=user)
-#@begin:!保存用户注册的个人信息时增加了一些字段
+#@begin:Add new fields to save profile in registration page
 #@date:2013-11-02        
     # profile.name = post_vars['name']
     profile.first_name = post_vars['first_name']
@@ -628,7 +628,7 @@ def create_account(request, post_override=None):
             email = post_vars.get('email', '')
             
         if eamap.external_name.strip() == '':
-#@begin:!由于修改了用户表字段，name改由first_name+last_name合成
+#@begin: Change user registration table field and show the name by combining first_name and last_name
 #@date:2013-11-02        
             name = post_vars.get('first_name', '') + post_vars.get('last_name', '')
 #@end            
@@ -641,7 +641,7 @@ def create_account(request, post_override=None):
         log.debug(u'In create_account with external_auth: user = %s, email=%s', name, email)
 
     # Confirm we have a properly formed request
-#@begin:!由于修改了用户表字段，提交用户信息时需要检查更多字段的有效性
+#@begin: Check the availability of the following fields as we change the user registration table fields
 #@date:2013-11-02           
     for a in ['username', 'email', 'password', 'first_name','last_name']:
 #@end   
@@ -649,7 +649,7 @@ def create_account(request, post_override=None):
             js['value'] = _("Error (401 {field}). E-mail us.").format(field=a)
             js['field'] = a
             return HttpResponse(json.dumps(js))
-#@begin:!注册表单的honor_code未用，以下提交检查注释掉
+#@begin:honor_code is not used in Pepper. Change the following confirmation to comments.
 #@date:2013-11-02   
     # if post_vars.get('honor_code', 'false') != u'true':
     #     js['value'] = _("To enroll, you must follow the honor code.").format(field=a)
@@ -672,12 +672,12 @@ def create_account(request, post_override=None):
     # TODO: Confirm e-mail is not from a generic domain (mailinator, etc.)? Not sure if
     # this is a good idea
     # TODO: Check password is sane
-#@begin:!由于修改了用户表字段，提交用户信息时需要检查更多字段的有效性
+#@begin:Check the availability of the following fields as we changed the user registration table fields
 #@date:2013-11-02   
     required_post_vars = ['username', 'email', 'first_name','last_name', 'password', 'terms_of_service']     # 'honor_code'
 #@end
     if tos_not_required:
-#@begin:!注册表单的honor_code未用，以下提交检查注释掉
+#@begin:honor_code is not used in Pepper. Change the following confirmation to comments.
 #@date:2013-11-02           
         required_post_vars = ['username', 'email', 'first_name','last_name', 'password'] # 'honor_code'
 #@end
@@ -685,14 +685,14 @@ def create_account(request, post_override=None):
         if len(post_vars[a]) < 2:
             error_str = {'username': 'Username must be minimum of two characters long.',
                          'email': 'A properly formatted e-mail is required.',
-#@begin:!由于修改了用户表字段，提交用户信息时需要检查更多字段的有效性
+#@begin:Check the availability of the following fields as we changed the user registration table fields
 #@date:2013-11-02                            
                          'first_name': 'Your first name must be a minimum of two characters long.',
                          'last_name': 'Your last name must be a minimum of two characters long.',
 #@end                         
                          'password': 'A valid password is required.',
                          'terms_of_service': 'Accepting Terms of Service is required.',
-#@begin:!注册表单的honor_code未用
+#@begin:honor_code is not used in the registration page
 #@date:2013-11-02                               
                          'honor_code': 'Agreeing to the Honor Code is required.',
                          }
@@ -700,7 +700,7 @@ def create_account(request, post_override=None):
             js['value'] = error_str[a]
             js['field'] = a
             return HttpResponse(json.dumps(js))
-#@begin:!由于修改了用户表字段，提交用户信息时需要检查更多字段的有效性
+#@begin:Check the availability of the following fields as we changed the user registration table fields
 #@date:2013-11-02  
     required_post_vars_dropdown=['major_subject_area_id','grade_level_id','district_id', 'school_id','years_in_education_id']
     for a in required_post_vars_dropdown:
@@ -735,7 +735,7 @@ def create_account(request, post_override=None):
     if isinstance(ret, HttpResponse):  # if there was an error then return that
         return ret
     (user, profile, registration) = ret
-#@begin:!由于修改了用户表字段，发送确认邮件时名字要改用first_name和last_name
+#@begin:As we change the user registration table fields, use first_name and last_name to send confirmation email
 #@date:2013-11-02
     d = {'first_name': post_vars['first_name'],
          'last_name': post_vars['last_name'],
@@ -1138,7 +1138,7 @@ def change_email_request(request):
         raise Http404
 
     user = request.user
-#@begin:!用户修改邮箱时不再需要确认密码
+#@begin:User doesnt need to confirm password when changing email address
 #@date:2013-11-02  
     # if not user.check_password(request.POST['password']):
     #     return HttpResponse(json.dumps({'success': False,
@@ -1254,13 +1254,13 @@ def change_name_request(request):
     except PendingNameChange.DoesNotExist:
         pnc = PendingNameChange()
     pnc.user = request.user
-#@begin:!增加字段相应修改
+#@begin:Add new field and change the code
 #@date:2013-11-02        
     pnc.new_first_name = request.POST['new_first_name']
     pnc.new_last_name = request.POST['new_last_name']
 #@end
     pnc.rationale = request.POST['rationale']
-#@begin:!增加字段相应修改
+#@begin:Add new field and change the code
 #@date:2013-11-02      
     if len(pnc.new_first_name) < 2:
         return HttpResponse(json.dumps({'success': False, 'error': _('First Name required')}))
@@ -1324,7 +1324,7 @@ def accept_name_change_by_id(id):
     up.set_meta(meta)
 
     up.name = pnc.new_name
-#@begin:!增加字段相应修改
+#@begin:Add new field and change the code
 #@date:2013-11-02          
     up.first_name = pnc.new_first_name
     up.last_name = pnc.new_last_name
@@ -1368,7 +1368,7 @@ def change_email_settings(request):
         track.views.server_track(request, "change-email-settings", {"receive_emails": "no", "course": course_id}, page='dashboard')
 
     return HttpResponse(json.dumps({'success': True}))
-#@begin:!dashboard增加更多字段的修改提交处理
+#@begin:Add more editable fields in the Dashboard
 #@date:2013-11-02        
 def download_certificate(request):
     return render_to_response("download_certificate.html", {})

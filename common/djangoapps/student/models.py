@@ -61,7 +61,7 @@ class UserProfile(models.Model):
     # This is not visible to other users, but could introduce holes later
     user = models.OneToOneField(User, unique=True, db_index=True, related_name='profile')
     name = models.CharField(blank=True, max_length=255, db_index=True)
-#@begin:!student 个人信息增加了一些字段
+#@begin:Add some fields to student profile
 #@date:2013-11-02        
     major_subject_area_id=models.CharField(blank=True, max_length=255, db_index=True)
     grade_level_id=models.CharField(blank=True, max_length=255, db_index=True)
@@ -637,7 +637,7 @@ class Registration(models.Model):
 class PendingNameChange(models.Model):
     user = models.OneToOneField(User, unique=True, db_index=True)
     new_name = models.CharField(blank=True, max_length=255)
-#@begin:!dashboard修改用户名时，需要同时在student_pendingnamechange表里添加相应字段
+#@begin:When changing username in dashboard, add the field in student_pendingnamechange
 #@date:2013-11-02        
     new_first_name = models.CharField(blank=True, max_length=255)
     new_last_name = models.CharField(blank=True, max_length=255)
@@ -994,7 +994,7 @@ def log_successful_logout(sender, request, user, **kwargs):
     """Handler to log when logouts have occurred successfully."""
     AUDIT_LOG.info(u"Logout - {0}".format(request.user))
 
-#@begin:!新增函数，用于people等处
+#@begin:Add new functions used in People pages (Global and Course)
 #@date:2013-11-02        
 def get_user_by_id(user_id):
     u = User.objects.get(id=user_id)
@@ -1003,12 +1003,27 @@ def get_user_by_id(user_id):
     return u, up    
 #@end
 
-#@begin:!新增合同类
+#@begin: Newly added contract class
 #@date:2013-11-02  
 class Contract(models.Model):
+    class Meta:
+        db_table = 'contract'
+    # id = models.IntegerField(blank=True, db_index=True, primary_key=True)        
     name = models.CharField(blank=True, max_length=255, db_index=False)
     district_id = models.IntegerField(blank=True, null=True, db_index=False)
     term_months = models.IntegerField(blank=True, null=True, db_index=False)
     licenses = models.IntegerField(blank=True, null=True, db_index=False)
     status = models.CharField(blank=True, max_length=255, db_index=False)
+    state_id = models.CharField(blank=True, max_length=255, db_index=False)
+    # alter table contract add state_id int;
 #@end
+
+#@begin: Newly added district class
+#@date:2013-11-06
+class District(models.Model):
+    class Meta:
+        db_table = 'district'
+    # id = models.IntegerField(blank=True, db_index=True, primary_key=True)
+    name= models.CharField(blank=True, max_length=255, db_index=False)
+#@end
+

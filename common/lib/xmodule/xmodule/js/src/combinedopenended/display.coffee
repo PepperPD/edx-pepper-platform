@@ -111,7 +111,7 @@ class @CombinedOpenEnded
   hint_wrapper_sel: '.hint-wrapper'
   message_wrapper_sel: '.message-wrapper'
   submit_button_sel: '.submit-button'
-  #@begin:Mockup code
+  #@begin:Code to show mockup and will be replaced later
   #@date:2013-11-02 
   #save_button_sel: '.save-button'
   #@end
@@ -195,7 +195,7 @@ class @CombinedOpenEnded
     @hint_wrapper = @$(@oe).find(@hint_wrapper_sel)
     @message_wrapper = @$(@oe).find(@message_wrapper_sel)
     @submit_button = @$(@oe).find(@submit_button_sel)
-    #@begin:Mockup code
+    #@begin:Code to show the mockup and will be replaced later
     #@date:2013-11-02 
     #@save_button = @$(@oe).find(@save_button_sel)
     #@end
@@ -209,15 +209,15 @@ class @CombinedOpenEnded
     @file_upload_list = @$(@oe).find(@file_upload_list_sel)
     @can_upload_files = false
     @open_ended_child= @$(@oe).find(@open_ended_child_sel)
-    #@begin:!ora-loading对象引用
+    #@begin:ora-loading object reference
     #@date:2013-11-02 
     @ora_loading=@$(@oe).find(@ora_loading_sel)
     #@end
-    #@begin:!去除提示
+    #@begin:Dont show the out of sync message
     #@out_of_sync_message = 'The problem state got out of sync.  Try reloading the page.'
     @out_of_sync_message = ''
     #@end
-    #@begin:!prompt 是否展开
+    #@begin: Always show prompt
     #@date:2013-11-02
     if @task_number>1
       @prompt_show()
@@ -229,7 +229,7 @@ class @CombinedOpenEnded
 
     @rebind()
   get_html_callback: (response) =>
-    #@begin:!避免response为空出现的错误
+    #@begin:Avoid the error caused by empty response
     #@date:2013-11-02   
     try
       @coe.replaceWith(response.html)
@@ -248,7 +248,7 @@ class @CombinedOpenEnded
   show_combined_rubric_current: () =>
     data = {}
     $.postWithPrefix "#{@ajax_url}/get_combined_rubric", data, (response) =>
-      #@begin:!避免response为空出现的错误
+      #@begin:Avoid the error caused by empty response
       #@date:2013-11-02   
       try
         if response.success
@@ -303,29 +303,29 @@ class @CombinedOpenEnded
     @answer_area.toggleClass(@location);
     @submit_button.unbind('click')
     @submit_button.show()
-    #@begin:Mockup code
+    #@begin:Code to show mockup and will be replaced later
     #@date:2013-11-02
     #@save_button.show()
     #@end
     @reset_button.hide()
     @hide_file_upload()
     @next_problem_button.hide()
-    #@begin:ora_loading hide
+    #@begin:Hide ora_loading
     #@date:2013-11-02
     @ora_loading.hide()
     #@end
     @hint_area.attr('disabled', false)
-    #@begin:rubric_wrapper hide
+    #@begin:Hide rubric_wrapper
     #@date:2013-11-02
     @rubric_wrapper.hide()
     #@end
-    #@begin:Mockup code
+    #@begin:Code to show mockup and will be replaced later
     #@date:2013-11-02
     #@save_button.click @save_text
     #@end
     @submit_button.prop('value', 'Submit')
     @submit_button.click @save_answer
-    #@begin:!如果是上传就隐文本框
+    #@begin: Dont show the Response text box when accept_file_upload is true
     #@date:2013-11-02
     if @accept_file_upload== "True"
        @answer_area.hide()
@@ -334,14 +334,14 @@ class @CombinedOpenEnded
        @prompt_show()
     if @child_state == 'done'
       @rubric_wrapper.hide()
-      #@begin:Mockup code
+      #@begin:Code to show mockup and will be replaced later
       #@date:2013-11-02
       #@save_button.hide()
       #@end
     if @child_type=="openended"
       @skip_button.hide()
     if @allow_reset=="True"
-      #@begin:Mockup code
+      #@begin:Code to show mockup and will be replaced later
       #@date:2013-11-02
       #@show_combined_rubric_current()
       #@end
@@ -352,7 +352,7 @@ class @CombinedOpenEnded
       @hint_area.attr('disabled', true)
       if @task_number<@task_count
         @gentle_alert "Your score did not meet the criteria to move to the next step."
-    #@begin:!状态为initial_submit的初始化，其中有对tinyMCE的初始化
+    #@begin:Initialize the initial_submit state including tinyMCE
     #@date:2013-11-02
     else if @child_state == 'initial_submit'
       
@@ -360,23 +360,23 @@ class @CombinedOpenEnded
       @rubric_wrapper.hide()
       @setup_file_upload()
       tinyMCE_class_init(@location)
-      #@begin:prompt show
+      #@begin:Always show prompt
       #@date:2013-11-02
       @prompt_show()
       #@end
-    #@begin:!状态为initial_submit的初始化，其中有对tinyMCE的初始化
+    #@begin:Initialize the initial_submit state including tinyMCE
     #@date:2013-11-02
     else if @child_state == 'initial'
       @answer_area.attr("disabled", false)
       @setup_file_upload()
       tinyMCE_class_init(@location)
-      #@begin:prompt show
+      #@begin:Always show prompt
       #@date:2013-11-02
       @prompt_show()
       #@end
     #@end
     else if @child_state == 'assessing'
-      #@begin:!上传文件和非上传在assessing的区别
+      #@begin:Distinguish upload file and non-upload file in assessing
       @setup_file_upload()
       if @accept_file_upload== "True"
          @answer_area.hide()
@@ -386,13 +386,13 @@ class @CombinedOpenEnded
       #@end
       @hide_file_upload()
       @rubric_wrapper.show()
-      #@begin:!submit_button改名
+      #@begin:Change the text shown in submit_button
       #@date:2013-11-02
       @submit_button.prop('value', 'Enter')
       #@end
       @submit_button.click @save_assessment
       @submit_button.attr("disabled",true)
-      #@begin:!删除answer_area
+      #@begin:Dont show answer_area
       #@date:2013-11-02
       $("#"+@answer_area.attr("id")+"_parent").remove()
       #@end
@@ -416,17 +416,17 @@ class @CombinedOpenEnded
       else
         @submit_button.click @message_post
     else if @child_state == 'done'
-      #@begin:!安装文件上传相关
+      #@begin:Install file upload
       #@date:2013-11-02
       @setup_file_upload()
       #@end
-      #@begin:!去除rubric_current
+      #@begin:Dont use rubric_current
       #@date:2013-11-02
       #@show_combined_rubric_current()
       #@end
       @rubric_wrapper.hide()
       @answer_area.attr("disabled", true)
-      #@begin:!上传文件和非上传在done的区别
+      #@begin:Distinguish upload file and non-upload file in done
       #@date:2013-11-02
       if @accept_file_upload== "True"
          @answer_area.hide()
@@ -434,7 +434,7 @@ class @CombinedOpenEnded
         @answer_area.attr("disabled", true)
         @replace_text_inputs()
       #@end
-      #@begin:!上传控件隐藏
+      #@begin:Hide file_upload attribution
       #@date:2013-11-02
       @hide_file_upload()
       #@end
@@ -507,7 +507,7 @@ class @CombinedOpenEnded
       $.ajaxWithPrefix("#{@ajax_url}/save_answer",settings)
     else
       @errors_area.html(@out_of_sync_message)
-  #@begin:!保存不提交
+  #@begin:Save without submitting
   #@date:2013-11-02    
   save_text: (event) =>
     #event.preventDefault()
@@ -548,7 +548,7 @@ class @CombinedOpenEnded
     else
       @errors_area.html(@out_of_sync_message)
   #@end
-  #@begin:!文件上传
+  #@begin:Upload files
   #@date:2013-11-02
   upload_file: (event) =>
     event.preventDefault()
@@ -623,7 +623,7 @@ class @CombinedOpenEnded
     else
       @errors_area.html(@out_of_sync_message)
   #@end
-  #@begin:!上传文件删除
+  #@begin:Delete uploaded files
   #@date:2013-11-02
   remove_file: (key,item) =>
     @ora_loading.show()
@@ -653,7 +653,7 @@ class @CombinedOpenEnded
           @remove_confirm()
     $.ajaxWithPrefix("#{@ajax_url}/remove_file",settings)
   #@end
-  #@begin:!上传的文件删除后确认并保存
+  #@begin:Confirm and save after deleting the uploaded file
   #@date:2013-11-02
   remove_confirm:() =>
     @child_state = 'initial'
@@ -691,7 +691,7 @@ class @CombinedOpenEnded
     else
       @errors_area.html(@out_of_sync_message)
   #@end
-  #@begin:!上传文件成功后确认并保存
+  #@begin:Confirm and save after uploading the file
   #@date:2013-11-02
   upload_confirm:() =>
     max_filesize = 2*1000*1000 #2MB
@@ -729,7 +729,7 @@ class @CombinedOpenEnded
     else
       @errors_area.html(@out_of_sync_message)
   #@end
-  #@begin:!获得文本
+  #@begin:Get the text
   #@date:2013-11-02
   get_text:()=>
     if @accept_file_upload!= "True"
@@ -737,7 +737,7 @@ class @CombinedOpenEnded
     else
       return @answer_area.val()
   #@end
-  #@begin:!设置文本
+  #@begin:Set up the text
   #@date:2013-11-02
   set_text:(val)=>
     if @accept_file_upload!= "True"
@@ -767,7 +767,7 @@ class @CombinedOpenEnded
       score_list = @rub.get_score_list()
       data = {'assessment' : checked_assessment, 'score_list' : score_list}
       $.postWithPrefix "#{@ajax_url}/save_assessment", data, (response) =>
-        #@begin:!ora_loading 隐藏 \response为空的处理
+        #@begin:Hide ora_loading \ when response is empty
         #@date:2013-11-02
         @ora_loading.hide()
         if response==null
@@ -886,7 +886,7 @@ class @CombinedOpenEnded
         @reload()
       else
         window.queuePollerID = window.setTimeout(@poll, 10000)
-  #@begin:!配置文件上传
+  #@begin:Upload configuration file
   #@date:2013-11-02 
   setup_file_upload: =>
     if @accept_file_upload == "True"
@@ -927,7 +927,7 @@ class @CombinedOpenEnded
   replace_text_inputs: =>
     answer_class = @answer_area.attr('class')
     answer_id = @answer_area.attr('id')
-    #@begin:!取值HTML输出
+    #@begin:Get value of HTML output
     #@date:2013-11-02 
     if $("#"+@answer_area.attr("id")+"_parent").length>0
       answer_val = @get_text()
