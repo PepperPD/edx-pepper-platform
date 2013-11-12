@@ -628,6 +628,7 @@ class MongoModuleStore(ModuleStoreBase):
             #'_id.category': {'$nin': detached_categories}
         })
         '''
+
         #return list(all_items)
         location = Location.ensure_fully_specified(location)
         item = self._find_one(location)
@@ -635,6 +636,7 @@ class MongoModuleStore(ModuleStoreBase):
         import logging
         log = logging.getLogger("tracking")
         log.debug("get_instance_items===============================\n:"+str(module)+"============")
+
         return module
     #@end
     def get_items(self, location, course_id=None, depth=0):

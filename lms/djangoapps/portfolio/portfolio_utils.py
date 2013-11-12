@@ -5,6 +5,12 @@ from courseware.model_data import FieldDataCache
 from courseware.views import jump_to_id
 from django.core.urlresolvers import reverse
 from sgmllib import SGMLParser
+<<<<<<< HEAD
+=======
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf-8')
+>>>>>>> cf8fa53ced35e73d8cb1f5a3d6bdd78932daf7be
 class Get_confirm(SGMLParser):
     def reset(self):
         SGMLParser.reset(self)

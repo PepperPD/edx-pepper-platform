@@ -43,6 +43,7 @@
   ##  <script type="text/javascript" src="${static.url('js/vendor/CodeMirror-2.25/mode/python/python.js')}"></script>
   <script type="text/javascript" src="${static.url('js/vendor/tiny_mce/tiny_mce.js')}"></script>
   <script type="text/javascript">
+<<<<<<< HEAD
     //var tinyMCE_init_sate=0;
     //var switch_content_page=0;
     /*
@@ -103,6 +104,13 @@
       return switch_content_page;
     }
     */
+=======
+    function tinyMCE_class_init(name)
+    {   
+      
+    }
+
+>>>>>>> cf8fa53ced35e73d8cb1f5a3d6bdd78932daf7be
     <!-----staff_access------->
     function setup_debug(element_id, edit_link, staff_context){
       $('#' + element_id + '_trig').leanModal(); 
@@ -151,8 +159,13 @@
         $(".combined-rubric-container").remove();
         $(".problem-tools").remove();
         $(".legend-container").remove();
+<<<<<<< HEAD
         $(".status-bar").remove();
         $("div").removeClass("problemwrapper"); 
+=======
+        //$(".status-bar").remove();
+        //$("div").removeClass("problemwrapper"); 
+>>>>>>> cf8fa53ced35e73d8cb1f5a3d6bdd78932daf7be
         $(".ui-accordion-header a, .ui-accordion-content .subtitle").each(function() {
           var elemText = $(this).text().replace(/^\s+|\s+$/g,''); // Strip leading and trailing whitespace
           var wordArray = elemText.split(" ");
