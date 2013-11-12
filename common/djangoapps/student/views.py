@@ -32,6 +32,12 @@ from django.utils.http import base36_to_int
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_POST
 
+
+from courseware.model_data import FieldDataCache
+from courseware.masquerade import setup_masquerade
+
+
+
 from ratelimitbackend.exceptions import RateLimitException
 
 from mitxmako.shortcuts import render_to_response, render_to_string
@@ -258,35 +264,106 @@ def register_user(request, extra_context=None):
 
     return render_to_response('register.html', context)
 
+#@begin:View of the newly added page
+#@date:2013-11-07
+# copy from lms/djangoapps/courseware/module_render.py
+def get_module_for_descriptor(user, request, descriptor, field_data_cache, course_id,
+                              position=None, wrap_xmodule_display=True, grade_bucket_type=None,
+                              static_asset_path=''):
+    """
+    Implements get_module, extracting out the request-specific functionality.
+
+    See get_module() docstring for further details.
+    """
+    # allow course staff to masquerade as student
+    if has_access(user, descriptor, 'staff', course_id):
+        setup_masquerade(request, True)
+
+    track_function = make_track_function(request)
+    xqueue_callback_url_prefix = get_xqueue_callback_url_prefix(request)
+
+    return get_module_for_descriptor_internal(user, descriptor, field_data_cache, course_id,
+                                              track_function, xqueue_callback_url_prefix,
+                                              position, wrap_xmodule_display, grade_bucket_type,
+                                              static_asset_path)
+
+#@end
+
+
+
+
+
+from django.db import models
+
+
+class StudentModule(models.Model):
+    """
+    Keeps student state for a particular module in a particular course.
+    """
+    class Meta:
+        db_table = 'courseware_studentmodule'
+        # unique_together = (('student', 'module_state_key', 'course_id'),)
+
+    module_type = models.CharField(max_length=32, default='problem', db_index=True)
+    module_state_key = models.CharField(max_length=255, db_index=True, db_column='module_id')
+    # student = models.ForeignKey(User, db_index=True)
+    student_id = models.IntegerField(default=0)
+    course_id = models.CharField(max_length=255, db_index=True)
+    state = models.TextField(null=True, blank=True)
+    grade = models.FloatField(null=True, blank=True, db_index=True)
+    max_grade = models.FloatField(null=True, blank=True)
+    done = models.CharField(max_length=8, default='na', db_index=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    modified = models.DateTimeField(auto_now=True, db_index=True)
+    module_id = models.CharField(max_length=255, db_index=True)
+
 
 @login_required
 @ensure_csrf_cookie
 def dashboard(request):
     user = request.user
-    
-
     # Build our courses list for the user, but ignore any courses that no longer
     # exist (because the course IDs have changed). Still, we don't delete those
     # enrollments, because it could have been a data push snafu.
-    courses = []
+    
+#@begin:Fetch out courses complated/incomplated seprately.
+#@date:2013-11-08    
+    courses_complated = []
+    courses_incomplated = []
+    courses=[]
     for enrollment in CourseEnrollment.enrollments_for_user(user):
         try:
 #@begin:Show the enrollment date of each course in Dashboard
-#@date:2013-11-02                    
+#@date:2013-11-02
             c=course_from_id(enrollment.course_id)
             c.student_enrollment_date=enrollment.created
+            model_data_cache = FieldDataCache.cache_for_descriptor_descendents(c.id, request.user, c, depth=1)
+            chapter_count=len(model_data_cache.descriptors)
+            model_data_cache = FieldDataCache.cache_for_descriptor_descendents(c.id, request.user, c, depth=2)
+            count_history=0
+            c.is_completed=False
+            chapter_count=len(model_data_cache.descriptors)-chapter_count
+            for m in model_data_cache.descriptors:
+                if m.ispublic:
+                    chapter_count=chapter_count+1
+                if len(StudentModule.objects.filter(student_id=request.user.id,
+                                                    course_id=c.id,
+                                                    module_type='sequential',
+                                                    module_id=m.location)) > 0:
+                    count_history=count_history+1
             courses.append(c)
+            if count_history==chapter_count:
+                courses_complated.append(c)
+            else:
+                courses_incomplated.append(c)
 #@end            
         except ItemNotFoundError:
             log.error("User {0} enrolled in non-existent course {1}"
                       .format(user.username, enrollment.course_id))
-
     course_optouts = Optout.objects.filter(user=user).values_list('course_id', flat=True)
-
     message = ""
     if not user.is_active:
         message = render_to_string('registration/activate_account_notice.html', {'email': user.email})
-
     # Global staff can see what courses errored on their dashboard
     staff_access = False
     errored_courses = {}
@@ -297,9 +374,8 @@ def dashboard(request):
 
     show_courseware_links_for = frozenset(course.id for course in courses
                                           if has_access(request.user, course, 'load'))
-
+    
     cert_statuses = {course.id: cert_info(request.user, course) for course in courses}
-
     exam_registrations = {course.id: exam_registration_info(request.user, course) for course in courses}
 
     # get info w.r.t ExternalAuthMap
@@ -308,20 +384,20 @@ def dashboard(request):
         external_auth_map = ExternalAuthMap.objects.get(user=user)
     except ExternalAuthMap.DoesNotExist:
         pass
-
-    context = {'courses': courses,
-               'course_optouts': course_optouts,
-               'message': message,
-               'external_auth_map': external_auth_map,
-               'staff_access': staff_access,
-               'errored_courses': errored_courses,
-               'show_courseware_links_for': show_courseware_links_for,
-               'cert_statuses': cert_statuses,
-               'exam_registrations': exam_registrations,
-               }
-
+    context = {
+        'courses_complated': courses_complated,
+        'courses_incomplated': courses_incomplated,
+        'course_optouts': course_optouts,
+        'message': message,
+        'external_auth_map': external_auth_map,
+        'staff_access': staff_access,
+        'errored_courses': errored_courses,
+        'show_courseware_links_for': show_courseware_links_for,
+        'cert_statuses': cert_statuses,
+        'exam_registrations': exam_registrations,
+        }
+#@end
     return render_to_response('dashboard.html', context)
-
 
 def try_change_enrollment(request):
     """
@@ -344,7 +420,6 @@ def try_change_enrollment(request):
             )
         except Exception, e:
             log.exception("Exception automatically enrolling after login: {0}".format(str(e)))
-
 
 def change_enrollment(request):
     """
@@ -503,7 +578,6 @@ def login_user(request, error=""):
     return HttpResponse(json.dumps({'success': False,
                                     'value': not_activated_msg}))
 
-
 @ensure_csrf_cookie
 def logout_user(request):
     """
@@ -524,7 +598,6 @@ def logout_user(request):
                            domain=settings.SESSION_COOKIE_DOMAIN)
     return response
 
-
 @login_required
 @ensure_csrf_cookie
 def change_setting(request):
@@ -537,7 +610,6 @@ def change_setting(request):
 
     return HttpResponse(json.dumps({'success': True,
                                     'location': up.location, }))
-
 
 def _do_create_account(post_vars):
     """
@@ -603,7 +675,6 @@ def _do_create_account(post_vars):
     except Exception:
         log.exception("UserProfile creation failed for user {id}.".format(id=user.id))
     return (user, profile, registration)
-
 
 @ensure_csrf_cookie
 def create_account(request, post_override=None):
@@ -1267,7 +1338,6 @@ def change_name_request(request):
     if len(pnc.new_last_name) < 2:
         return HttpResponse(json.dumps({'success': False, 'error': _('Last Name required')}))
 
-
     pnc.new_name = "%s %s" % (request.POST['new_first_name'], request.POST['new_last_name'])
 #@end
     pnc.save()
@@ -1375,7 +1445,6 @@ def download_certificate(request):
 
 def latest_news(request):
     return render_to_response("latest_news.html", {})
-
 
 def change_school_request(request):
     up = UserProfile.objects.get(user=request.user)  

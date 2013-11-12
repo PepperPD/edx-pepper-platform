@@ -4,7 +4,7 @@ function PromptBox(Container,width)
 	this.source={};
 	this.con=$("."+Container);
 	this.con.css("position","relative");
-	this.box=$("<div style='padding:10px;position:absolute;left:0px;top:0px;width:"+_width+"px;border:1px solid #000;background:#ffffff;word-wrap:break-word'>000</div>");
+	this.box=$("<div style='padding:10px;position:absolute;left:0px;top:0px;width:"+_width+"px;border:1px solid #000;background:#b1fdfd;word-wrap:break-word'>000</div>");
 	this.con.append(this.box);
 	this.box.hide();
 

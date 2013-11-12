@@ -3,6 +3,7 @@
 <%!
    from django.core.urlresolvers import reverse
    from courseware.courses import course_image_url, get_course_about_section
+   from xmodule.util.date_utils import get_default_time_display
    from courseware.access import has_access
    from certificates.models import CertificateStatuses
    from xmodule.modulestore import MONGO_MODULESTORE_TYPE
@@ -42,8 +43,9 @@
   ##  <script type="text/javascript" src="${static.url('js/vendor/CodeMirror-2.25/mode/python/python.js')}"></script>
   <script type="text/javascript" src="${static.url('js/vendor/tiny_mce/tiny_mce.js')}"></script>
   <script type="text/javascript">
-    var tinyMCE_init_sate=0;
-    var switch_content_page=0;
+    //var tinyMCE_init_sate=0;
+    //var switch_content_page=0;
+    /*
     function tinyMCE_init()
     {   
         if(!tinyMCE_init_sate){
@@ -66,8 +68,10 @@
           tinyMCE_init_sate=1;
       }
     }
+    */
     function tinyMCE_class_init(name)
     {   
+      /*
         tinyMCE.init({
           // General options
           mode : "textareas",
@@ -83,7 +87,9 @@
           theme_advanced_statusbar_location : "",
           theme_advanced_resizing : false
           });
+      */
     }
+    /*
      function tinyMCE_sate(val)
     {
       tinyMCE_init_sate=val;
@@ -96,6 +102,7 @@
     {
       return switch_content_page;
     }
+    */
     <!-----staff_access------->
     function setup_debug(element_id, edit_link, staff_context){
       $('#' + element_id + '_trig').leanModal(); 
@@ -117,6 +124,7 @@
       );
   }
   <!---------------- -->
+
   </script>
   <%static:js group='courseware'/>
   <%static:js group='discussion'/>
@@ -135,6 +143,16 @@
     var $$course_id = "${course.id}";
 
     $(function(){
+        $(".reset-button").remove();
+        $(".submit-button").remove();
+        $(".rubric-wrapper").remove();
+        $(".grader-status").remove();
+        $(".response-tools").remove();
+        $(".combined-rubric-container").remove();
+        $(".problem-tools").remove();
+        $(".legend-container").remove();
+        $(".status-bar").remove();
+        $("div").removeClass("problemwrapper"); 
         $(".ui-accordion-header a, .ui-accordion-content .subtitle").each(function() {
           var elemText = $(this).text().replace(/^\s+|\s+$/g,''); // Strip leading and trailing whitespace
           var wordArray = elemText.split(" ");
@@ -249,12 +267,22 @@
 </div>
 
 <div class="main " style="margin-top:20px;">
-  <div class="container2 course-wrapper">
+  <div class="course-wrapper">
     <section class="course-index">
       <div class="sub_tit" style="width:auto;"><span class="user_name">KelSunday</span></div>
       <a class="sub_menu" href="${reverse('portfolio_about_me',args=[course.id])}">About Me</a> 
-      <a class="sub_menu xz" href="${reverse('portfolio_journal_and_reflections',args=[course.id])}">Journal and Reflections</a> 
-      <a class="sub_menu" href="${reverse('portfolio_uploads',args=[course.id])}">Uploads</a> 
+      <a class="sub_menu xz" href="${reverse('portfolio_journal_and_reflections',args=[course.id])}">My Course Work</a> 
+      <div class="chapter">
+      <ul>
+      % for chapter in chapters:
+          <li class="${'active' if chapter['active'] else ''}" >
+            <a href="${reverse('portfolio_journal_and_reflections',args=[course.id,chapter['url_name']])}">
+              <p>${chapter['display_name']} ${'<span class="sr">, current section</span>' if chapter['active'] else ''}</p>
+            </a>
+          </li>
+      % endfor
+      </ul>
+      </div>
       <a class="sub_menu" href="#">My Discussions</a> 
       <a class="sub_menu" href="#">Peer Work to Review</a> 
       <a class="sub_menu" href="#">My Work Needing Review</a> 

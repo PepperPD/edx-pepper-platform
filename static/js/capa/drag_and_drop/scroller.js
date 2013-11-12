@@ -64,7 +64,7 @@ define(['logme'], function (logme) {
             // When there are no more hidden draggables, prevent from
             // scrolling infinitely.
 
-            /*@begin:Set the left margin be [147]*/
+            /*@begin:!边界判断常数改为[147]*/
             /*@date:2013-11-02*/
             if (showElLeftMargin > -147) {
                 return;
@@ -163,7 +163,7 @@ define(['logme'], function (logme) {
 
             // When there are no more hidden draggables, prevent from
             // scrolling infinitely.
-            /*@begin:Set the left margin be [147]*/
+            /*@begin:!边界判断常数改为[147]*/
             /*@date:2013-11-02*/
             if (showElLeftMargin < -147 * (state.numDraggablesInSlider - 5)) {
                 return;
@@ -199,7 +199,7 @@ define(['logme'], function (logme) {
         function updateArrowOpacity() {
             moveLeftEl.children('div').css('opacity', '1');
             moveRightEl.children('div').css('opacity', '1');
-            /*@begin:Set the left margin be [147]*/
+            /*@begin:!边界判断常数改为[147]*/
             /*@date:2013-11-02*/
             if (showElLeftMargin < -147 * (state.numDraggablesInSlider - 5)) {
                 moveRightEl.children('div').css('opacity', '.4');

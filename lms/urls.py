@@ -11,9 +11,7 @@ if settings.DEBUG or settings.MITX_FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
 
 urlpatterns = (
     '',  # nopep8
-    # url(r'^sphinx$', 'people.views.sphinx'),d
-
-    url(r'^district/$', 'district.views.index',name="district_index"),
+    # url(r'^sphinx$', 'people.views.sphinx'),
 
     url(r'^contract/$', 'contract.views.index',name="contract_index"),
     url(r'^contract/create$', 'contract.views.create',name="contract_create"),
@@ -21,7 +19,6 @@ urlpatterns = (
     url(r'^contract/import_user/$', 'contract.views.import_user',name="contract_import_user"),
     url(r'^contract/import_user_submit/$', 'contract.views.import_user_submit',name="contract_import_user_submit"),
     url(r'^contract/submit$', 'contract.views.submit_contract',name="contract_submit"),
-    
     url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people/$', 'people.views.course_index', name="people"),
     url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/my_people/$', 'people.views.my_course_index', name="my_people"),
 
@@ -293,7 +290,10 @@ if settings.COURSEWARE_ENABLED:
             'portfolio.views.about_me', name="portfolio_about_me"),
 
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/journal_and_reflections$',
-            'portfolio.views.journal_and_reflections', name="portfolio_journal_and_reflections"),           
+            'portfolio.views.journal_and_reflections', name="portfolio_journal_and_reflections"),  
+
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/journal_and_reflections/(?P<chapter_id>[^/]+)$',
+            'portfolio.views.journal_and_reflections', name="portfolio_journal_and_reflections"),
 
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/uploads$',
             'portfolio.views.uploads', name="portfolio_uploads"), 

@@ -543,7 +543,7 @@
 <section class="my-courses">
   <header style="width:886px;height:246px;margin:auto;position:relative;border-bottom:none;margin-bottom:30px;">
     <div style="position:absolute;background:url(${static.url('images/p15.png')});width:886px;height:246px;">
-      <a href="/latest_news" style="margin:170px 0 0 227px;position:absolute;" class="btnx">${_('Latest News')}</a>
+      <a href="/latest_news" style="margin:170px 0 0 227px;position:absolute;" class="btnx dashboard-btn1">${_('Latest News')}</a>
     </div>
   </header>
 </section>
@@ -553,14 +553,15 @@
     <header>
       <h2>${_("Current Courses")}</h2>
     </header>
-    % if len(courses) > 0:
+    % if len(courses_incomplated) > 0:
 <!--@begin:Change the disply of the courses list in Dashboard-->
 <!--@date:2013-11-02-->    
-      % for i,course in enumerate(courses):
+      % for i,course in enumerate(courses_incomplated):
+
 
     <%
        border_overide='';
-       if i==len(courses)-1:
+       if i==len(courses_incomplated)-1:
          border_overide="border-bottom:3px solid #0098C9"
        %>
     
@@ -708,20 +709,23 @@
                 </div>
             % endif
 
-                <link rel="stylesheet" href="/static/tmp-resource/css/main.css" type="text/css" media="screen" />
+                
+            <link rel="stylesheet" href="/static/tmp-resource/css/main.css" type="text/css" media="screen" />
             % if course.id in show_courseware_links_for:
               % if course.has_ended():
                 <a href="${course_target}" class="enter-course archived">${_('View Archived Course')}</a>
               % else:
-                <a href="${course_target}" class="enter-course">${_('View Course')}</a>
-				
+                <a href="${course_target}" class="enter-course dashboard-btn1">${_('View Course')}</a>
 				<!--@begin:make the 'View Portfolio' button enabled-->
 				<!--@date:2013-11-02-->
-				<a href="${reverse('portfolio_about_me',args=[course.id])}" class="enter-course orange-btn" style="margin-left:10px;">${_('View Portfolio')}</a>
+				<a href="${reverse('portfolio_about_me',args=[course.id])}" class="enter-course dashboard-btn2" style="margin-left:10px;">${_('View Portfolio')}</a>
 				<!--@end-->
- 
               % endif
             % endif
+
+           
+
+                
             <a href="#unenroll-modal" class="unenroll" rel="leanModal" data-course-id="${course.id}" data-course-number="${course.number}">${_('Unregister')}</a>
 	    % if settings.MITX_FEATURES['ENABLE_INSTRUCTOR_EMAIL'] and modulestore().get_modulestore_type(course.id) == MONGO_MODULESTORE_TYPE:
 	      <!-- Only show the Email Settings link/modal if this course has bulk email feature enabled -->

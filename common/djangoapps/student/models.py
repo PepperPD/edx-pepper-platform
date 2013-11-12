@@ -72,6 +72,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(blank=True, max_length=255, db_index=True)
     last_name = models.CharField(blank=True, max_length=255, db_index=True)
     bio = models.CharField(blank=True, max_length=255, db_index=True)
+    photo = models.CharField(blank=True, max_length=50, db_index=False)
 #@end
     meta = models.TextField(blank=True)  # JSON dictionary for future expansion
     courseware = models.CharField(blank=True, max_length=255, default='course.xml')
@@ -1014,7 +1015,6 @@ class Contract(models.Model):
     term_months = models.IntegerField(blank=True, null=True, db_index=False)
     licenses = models.IntegerField(blank=True, null=True, db_index=False)
     status = models.CharField(blank=True, max_length=255, db_index=False)
-    state_id = models.CharField(blank=True, max_length=255, db_index=False)
     # alter table contract add state_id int;
 #@end
 

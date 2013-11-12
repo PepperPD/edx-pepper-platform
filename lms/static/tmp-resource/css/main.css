@@ -117,6 +117,7 @@
     text-shadow: #f21 0px 1px 0px !important;
     transition-timing-function:cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1);
 }
+
 .orange-btn:normal {
     background-color:#126F9A !important;
     text-decoration: none;
@@ -131,3 +132,71 @@
     transition-timing-function:cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1);
 }
 
+.orange-btn:normal {
+    background-color:#51698d !important;
+    text-decoration: none;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    cursor: pointer;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    font-family: 'Open Sans',Verdana,Geneva,sans-serif;
+    box-shadow: rgb(10, 74, 103) 0px 2px 1px 0px;
+    color:#fff;
+    transition-timing-function:cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.dashboard-btn1{
+    background:#51698d;
+    background-image:none !important;
+    background-color:#51698d !important;
+    text-decoration: none;
+    padding-bottom: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 7px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    cursor: pointer;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    font-family: 'Open Sans',Verdana,Geneva,sans-serif;
+    color:#fff;
+    box-shadow:none !important;
+    border:none !important;
+}
+
+.dashboard-btn2{
+    background:#4fccc8;
+    background-image:none !important;
+    background-color:#4fccc8 !important;
+    text-decoration: none;
+    padding-bottom: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 7px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    cursor: pointer;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    font-family: 'Open Sans',Verdana,Geneva,sans-serif;
+    color:#fff;
+    box-shadow:none !important;
+    border:none !important;
+}

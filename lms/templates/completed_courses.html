@@ -9,7 +9,7 @@
   from xmodule.modulestore.django import modulestore
 %>
 
-% for course in courses:
+% for course in courses_complated:
         <article class="my-course">
           <%
             course_target = reverse('courseware', args=[course.id])
@@ -25,21 +25,13 @@
           % endif
           <section class="info">
             <hgroup>
-
-
               <p class="date-block">
                 ${_("Course Completed - {end_date:%Y-%m-%d}").format(end_date=course.student_enrollment_date)}
               </p>
-
- 
-
-
-              
-              
               <h2 class="university">${get_course_about_section(course, 'university')}</h2>
               <h3>
                 % if course.id in show_courseware_links_for:
-                  <a href="${course_target}" style="color:#f90">${course.display_number_with_default | h} ${course.display_name_with_default}</a>
+                  <a href="${course_target}">${course.display_number_with_default | h} ${course.display_name_with_default}</a>
                 % else:
                   <span>${course.display_number_with_default | h} ${course.display_name_with_default}</span>
                 % endif
@@ -141,18 +133,17 @@
                 % endif
                 </div>
             % endif
-
                 <link rel="stylesheet" href="/static/tmp-resource/css/main.css" type="text/css" media="screen" />
             % if course.id in show_courseware_links_for:
               % if course.has_ended():
                 <a href="${course_target}" class="enter-course archived">${_('View Archived Course')}</a>
               % else:
-                <a href="${course_target}" class="enter-course orange-btn">${_('View Course')}</a>
+                <a href="${course_target}" class="enter-course dashboard-btn2">${_('View Course')}</a>
               % endif
             % endif
 	    % if settings.MITX_FEATURES['ENABLE_INSTRUCTOR_EMAIL'] and modulestore().get_modulestore_type(course.id) == MONGO_MODULESTORE_TYPE:
 	      <!-- Only show the Email Settings link/modal if this course has bulk email feature enabled -->
-            <a href="/download_certificate" target="blank" class="enter-course orange-btn" style="margin-left:10px;float:right;">${_('Download Your PDF Certificate')}</a>
+            <a href="/download_certificate" target="blank" class="enter-course dashboard-btn1" style="margin-left:10px;float:right;">${_('Download Your PDF Certificate')}</a>
 	    % endif
           </section>
         </article>
