@@ -19,10 +19,7 @@ urlpatterns = (
     url(r'^contract/import_user/$', 'contract.views.import_user',name="contract_import_user"),
     url(r'^contract/import_user_submit/$', 'contract.views.import_user_submit',name="contract_import_user_submit"),
     url(r'^contract/submit$', 'contract.views.submit_contract',name="contract_submit"),
-<<<<<<< HEAD
-=======
     
->>>>>>> cf8fa53ced35e73d8cb1f5a3d6bdd78932daf7be
     url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people/$', 'people.views.course_index', name="people"),
     url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/my_people/$', 'people.views.my_course_index', name="my_people"),
 
