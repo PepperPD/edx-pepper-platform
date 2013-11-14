@@ -53,10 +53,7 @@ def get_module_combinedopenended(request, course, location, isupload):
         confirm.feed(con)
         if confirm.score_urls[0] == 'correct' and confirm.state_urls[0] == 'done':
             content.append(add_edit_tool(con,course,descriptor[x]))
-    import logging
-    log = logging.getLogger("tracking")
-    #log.debug("content===============================\n:"+str(reverse('jump_to_id',args=(course.id,'8f563e9f334f4f50a9c6d32ee3161b77')))+"\n===========================")
-    log.debug("content===============================\n:"+str(location)+"\n===========================")
+
     return content
 
    
