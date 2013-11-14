@@ -162,7 +162,7 @@ class @CombinedOpenEnded
     @task_number = @coe.data('task-number')
     @accept_file_upload = @coe.data('accept-file-upload')
     @location = @coe.data('location')
-
+    @data_score = @coe.data('score')
     # set up handlers for click tracking
     @rub = new Rubric(@coe)
     @rub.initialize(@location)
@@ -385,7 +385,8 @@ class @CombinedOpenEnded
         @replace_text_inputs()
       #@end
       @hide_file_upload()
-      @rubric_wrapper.show()
+      if @data_score!='correct'
+        @rubric_wrapper.show()
       #@begin:Change the text shown in submit_button
       #@date:2013-11-02
       @submit_button.prop('value', 'Enter')
@@ -502,7 +503,10 @@ class @CombinedOpenEnded
           if response==null
             alert("Network error. Please try again.")
             return false
-          @replace_answer(response)
+          if @data_score!='correct'
+            @replace_answer(response)
+          else
+            @skip_assessment()
 
       $.ajaxWithPrefix("#{@ajax_url}/save_answer",settings)
     else
@@ -788,6 +792,29 @@ class @CombinedOpenEnded
     else
       @errors_area.html(@out_of_sync_message)
 
+  skip_assessment: () =>
+    $("#"+@answer_area.attr("id")+"_parent").remove()
+    @submit_button.attr("disabled",true)
+    @submit_button.hide()
+    data = {'assessment' : 1, 'score_list' : 1}
+    $.postWithPrefix "#{@ajax_url}/save_assessment", data, (response) =>
+      @ora_loading.hide()
+      if response==null
+          alert("Network error. Please try again.")
+          return false
+      if response.success
+        @child_state = response.state
+
+        if @child_state == 'post_assessment'
+          @hint_wrapper.html(response.hint_html)
+          @find_hint_elements()
+        else if @child_state == 'done'
+          @rubric_wrapper.hide()
+
+        @rebind()
+      else
+        @errors_area.html(response.error)
+    
   save_hint:  (event) =>
     event.preventDefault()
     if @child_state == 'post_assessment'

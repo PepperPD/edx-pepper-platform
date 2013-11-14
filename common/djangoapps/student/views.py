@@ -318,6 +318,15 @@ class StudentModule(models.Model):
     module_id = models.CharField(max_length=255, db_index=True)
 
 
+
+
+from courseware.model_data import FieldDataCache, DjangoKeyValueStore
+from xblock.fields import Scope
+from courseware.grades import grade
+
+          
+       
+    
 @login_required
 @ensure_csrf_cookie
 def dashboard(request):
@@ -352,7 +361,11 @@ def dashboard(request):
                                                     module_id=m.location)) > 0:
                     count_history=count_history+1
             courses.append(c)
-            if count_history==chapter_count:
+
+            # check grade total, refer to lms/djangoapps/courseware/grades.py
+            grade_precent=grade(request.user,request,c)['percent']
+            
+            if count_history==chapter_count and grade_precent >= 0.85:
                 courses_complated.append(c)
             else:
                 courses_incomplated.append(c)

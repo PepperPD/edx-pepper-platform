@@ -25,7 +25,7 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
 <link rel="stylesheet" type="text/css"  href="/static/tmp-resource/css/ppd-general01.css"/>
 <style>
   #submit:hover {
-  background:#fc5;
+  background:#6e8194;
   transition-delay: 0s, 0s, 0s;
   transition-duration: 0.25s, 0.25s, 0.25s;
   transition-property:color, background,​ box-shadow;
@@ -34,7 +34,7 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
   color:#fff;
   }
   #submit {
-  background-color:#f93;
+  background-color:#556370;
   text-decoration: none;
   padding-bottom: 7px;
   padding-left: 10px;
@@ -46,7 +46,7 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
   font-family: 'Open Sans',Verdana,Geneva,sans-serif;
-  box-shadow: #a93 0px 2px 1px 0px;
+  box-shadow: #949494 0px 2px 1px 0px;
   color:#fff;
   transition-timing-function:cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1);
   }
@@ -143,16 +143,16 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
 
 <!--@begin:Change the banding image in Login page-->
 <!--@date:2013-11-02-->
-<div style="margin:0 auto;width:960px;height:125px;background:url(static/images/ppd-login-banner01.png);border-bottom:1px solid #000;">
-	<section class="_banner_title_font">
+<div style="margin:0 auto;width:960px;height:195px;background:url(static/images/ppd-register-banner.png);border-bottom:1px solid #000;">
+	<div class="_banner_whatis_title_font">
 		WELCOME
-		<section class="_banner_title_content_font">
+		<div class="_banner_whatis_title_content_font">
 			register below to create your account
-		</section>
-	</section>
+		</div>
+	</div>
 </div>
 <!--@end-->
-
+<div style="width:960px;margin:0 auto;">
 <section class="register container">
   <section role="main" class="content">
     <form role="form" id="register-form" method="post" data-remote="true" action="/create_account" novalidate>
@@ -531,3 +531,4 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
       
   </aside>
 </section>
+<div/>
