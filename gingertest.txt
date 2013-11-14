@@ -1,0 +1,6 @@
+
+Client ID
+    cbd0391265620cf769ee
+Client Secret
+    8b293a9a2cc99f9f89221886c18c1723ba8e7491
+
