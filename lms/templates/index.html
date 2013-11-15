@@ -30,13 +30,9 @@
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 7px;
-  border-bottom-left-radius: 2px;
-  border-bottom-right-radius: 2px;
   cursor: pointer;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
   font-family: 'Open Sans',Verdana,Geneva,sans-serif;
-  box-shadow: #fff 2px 2px 1px 0px;
+  box-shadow: 0px 0px 0px 2px #fff;
   color:#fff;
   transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1);
   
@@ -260,6 +256,18 @@
 <!--@date:2013-11-02-->
 <div id="blocks" style="text-align:center;background:#f7f7f7;padding:25px 0 25px 0;">
 	<div style="width:963px;height:225px;border:1px solid #666;margin:auto;text-align:left;background:#fff;">
+		<!--@begin:add the video-->
+		<!--@date:2013-11-15-->
+		<div id="ppd_video_main" style=" width:480px; height:270px; z-index:99; position:fixed;margin:auto;left:0; right:0; top:0; bottom:0;display:none;">
+			<div id="ppd_video_close" style="width:20px;height:20px;position:absolute;left:460px;cursor:pointer;z-index:1;">
+				<img src="static/images/ppd-video-close01.png" width="20" height="20"/>
+			</div>
+			<video id="sampleMovie" autobuffer controls>
+				<source src="static/video/ppd-whatis-banner01.mp4"/>
+			</video>
+		</div>
+		<!--@end-->
+		
 		<img style="float:left;width:376px;height:225px;" src="${MITX_ROOT_URL}/static/images/ppd-index-banner-left01.png"/>
 		<div style="width:587px;height:225px;float:right;background:url(/static/images/ppd-index-banner-right01.png);">
 
@@ -281,7 +289,7 @@
 			
 			<!--@begin:modify button position-->
 			<!--@date:2013-11-02-->
-			<div style="width:500px;padding-left:32px;padding-top:17px;">
+			<div style="width:500px;padding-left:32px;padding-top:19px;">
 				<a href="/courses" class="btnxf" style="color:#fff;font-size:11px;text-decoration:none;">VIEW ALL COURSES</a>
 			</div>
 			<!--@end-->
@@ -310,11 +318,35 @@
 
 			<!--@begin:modify button position,button content-->
 			<!--@date:2013-11-02-->
-			<div style="width:500px;padding-left:32px;padding-top:17px;">
-				<a href="/what_is" class="btnxf" style="color:#fff;font-size:11px !important;text-decoration:none;">WATCH PEPPER VIDEO</a>
+			<div id="ppd_btn_video" style="width:500px;padding-left:32px;padding-top:19px;">
+				<a href="#" class="btnxf" style="color:#fff;font-size:11px !important;text-decoration:none;">WATCH PEPPER VIDEO</a>
 			</div>
 			<!--@end-->
 		</div>
 	</div>
 </div>
+<!--@end-->
+
+<!--@begin:add jq/js code to control the video-->
+<!--@date:2013-11-15-->
+<script>
+jQuery(function($){
+	var id_ppd_video_main = document.getElementById('ppd_video_main');
+	var id_ppd_btn_video = document.getElementById('ppd_btn_video');
+	var id_ppd_video_close = document.getElementById('ppd_video_close');
+	
+	id_ppd_btn_video.onmousedown = function()
+	{
+		$("#ppd_video_main").fadeIn(600);
+		document.getElementById('sampleMovie').play();
+	}
+	
+	id_ppd_video_close.onmousedown = function()
+	{
+		$("#ppd_video_main").fadeOut(300);
+		document.getElementById('sampleMovie').pause();
+		document.getElementById('sampleMovie').currentTime = 0;
+	}
+});
+</script>
 <!--@end-->
