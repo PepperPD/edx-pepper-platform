@@ -124,18 +124,18 @@ site_status_msg = get_site_status_msg(course_id)
     % endif
 
     % if not user.is_authenticated():
-    <li><a href="/what_is" class="main-link">What is Pepper?</a></li>
+    <li><a href="/what_is_pepper" class="main-link">What is Pepper?</a></li>
     % endif
     
     <li><a href="/courses" class="main-link">Courses</a></li>
 
     % if not user.is_authenticated():
-    <li><a href="/districts" class="main-link">Districts</a></li>
+    <li><a href="/contact" class="main-link">Districts</a></li>
     % endif
 
     % if user.is_authenticated():
-    <li><a href="/access_resource_library" class="main-link">Access Resource Library</a></li>
-    <li><a href="/people" class="main-link">People</a></li>
+    <li><a href="/resource_library_global" class="main-link">Access Resource Library</a></li>
+    <li><a href="/people_global" class="main-link">People</a></li>
     % endif
 
     % if user.is_authenticated():
@@ -160,12 +160,11 @@ site_status_msg = get_site_status_msg(course_id)
   <li class="primary">
     <a href="#" class="dropdown"><span class="sr">${_("More options dropdown")}</span> &#9662;</a>
     <ul class="dropdown-menu">
-      <%block name="navigation_dropdown_menu_links" >
+<%block name="navigation_dropdown_menu_links" >
 <!--@begin:Change the website in contact-->
 <!--@date:2013-11-02-->
-      <li><a href="/_contact">${_("Help")}</a></li>
-<!--@end-->      
-      
+      <li><a href="/faq">${_("Help")}</a></li>
+<!--@end-->       
 </%block>
 <li><a href="${reverse('logout')}">${_("Log Out")}</a></li>
 </ul>
@@ -203,13 +202,13 @@ site_status_msg = get_site_status_msg(course_id)
 <!--@date:2013-11-02-->
             <a  class="main-link" href="${reverse('course-specific-register', args=[course.id])}">Become a Member</a>
           % else:
-           <li><a  class="main-link" href="/_contact" styledd>Become a Member</a></li>
+           <li><a  class="main-link" href="/contact" styledd>Become a Member</a></li>
 <!--@end-->            
            % endif
       % endif
 <!--@begin:Add tab About Us-->
 <!--@date:2013-11-02-->
-      <li><a href="/intro" class="main-link">About Us</a></li>
+      <li><a href="/about_pepper" class="main-link">About Us</a></li>
 <!--@end-->                  
     </ol>
 
