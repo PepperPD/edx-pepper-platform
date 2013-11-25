@@ -92,3 +92,16 @@ def intro_faq(request):
 def _contact(request):
     return render_to_response('_contact.html', {})
 #@end
+
+#@begin:View of the new added page
+#@date:2013-11-21  
+@ensure_csrf_cookie
+@cache_if_anonymous
+def tos(request):
+    return render_to_response('static_templates/tos.html', {})
+
+@ensure_csrf_cookie
+@cache_if_anonymous
+def privacy(request):
+    return render_to_response('static_templates/privacy.html', {})
+#@end

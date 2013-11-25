@@ -20,15 +20,15 @@ urlpatterns = (
     url(r'^contract/import_user_submit/$', 'contract.views.import_user_submit',name="contract_import_user_submit"),
     url(r'^contract/submit$', 'contract.views.submit_contract',name="contract_submit"),
     
-    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people/$', 'people.views.course_index', name="people"),
+    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people$', 'people.views.course_index', name="people"),
     url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/my_people/$', 'people.views.my_course_index', name="my_people"),
 
-    url(r'^people/$', 'people.views.people', name="people"),
+    url(r'^people_global$', 'people.views.people', name="people"),
     url(r'^my_people/$', 'people.views.my_people', name="my_people"),
 
-    url(r'^download_certificate/$', 'student.views.download_certificate', name="download_certificate"),
-    url(r'^latest_news/$', 'student.views.latest_news', name="latest_news"),
-    url(r'^access_resource_library/$', 'access_resource_library.views.index', name="access_resource_library"),
+    url(r'^download_certificate$', 'student.views.download_certificate', name="download_certificate"),
+    url(r'^latest_news$', 'student.views.latest_news', name="latest_news"),
+    url(r'^resource_library_global$', 'access_resource_library.views.index', name="access_resource_library"),
 
     # certificate view
 
@@ -152,7 +152,7 @@ for key, value in settings.MKTG_URL_LINK_MAP.items():
 
     # Make the assumption that the URL we want is the lowercased
     # version of the map key
-    urlpatterns += (url(r'^%s' % key.lower(),
+    urlpatterns += (url(r'^%s$' % key.lower(),
                         'static_template_view.views.render',
                         {'template': template}, name=value),)
 
@@ -212,15 +212,18 @@ if settings.COURSEWARE_ENABLED:
         # url(r'^save_circuit/(?P<circuit>[^/]*)$', 'circuit.views.save_circuit'),
 
         url(r'^courses/?$', 'branding.views.courses', name="courses"),
-        url(r'^what_is$', 'branding.views.what_is', name="what_is"),
+        url(r'^what_is_pepper$', 'branding.views.what_is', name="what_is"),
         url(r'^districts$', 'branding.views.districts', name="districts"),
-        url(r'^_contact$', 'branding.views._contact', name="contact_us"),
+        url(r'^contact$', 'branding.views._contact', name="contact_us"),
 
-        url(r'^intro$', 'branding.views.intro', name="intro"),
-        url(r'^intro_research$', 'branding.views.intro_research', name="intro_research"),
-        url(r'^intro_ourteam$', 'branding.views.intro_ourteam', name="intro_ourteam"),
-        url(r'^intro_faq$', 'branding.views.intro_faq', name="intro_faq"),
-        
+        url(r'^about_pepper$', 'branding.views.intro', name="intro"),
+        url(r'^research_pedagogy$', 'branding.views.intro_research', name="intro_research"),
+        url(r'^our_team$', 'branding.views.intro_ourteam', name="intro_ourteam"),
+        url(r'^faq$', 'branding.views.intro_faq', name="intro_faq"),
+        url(r'^terms_of_service$', 'branding.views.tos', name="tos"),
+        url(r'^privacy_policy$', 'branding.views.privacy', name="privacy"),
+
+
         url(r'^change_enrollment$',
             'student.views.change_enrollment', name="change_enrollment"),
         url(r'^change_email_settings$', 'student.views.change_email_settings', name="change_email_settings"),
@@ -290,10 +293,10 @@ if settings.COURSEWARE_ENABLED:
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/about_me$',
             'portfolio.views.about_me', name="portfolio_about_me"),
 
-        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/journal_and_reflections$',
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/my_coursework$',
             'portfolio.views.journal_and_reflections', name="portfolio_journal_and_reflections"),  
 
-        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/journal_and_reflections/(?P<chapter_id>[^/]+)$',
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/my_coursework/(?P<chapter_id>[^/]+)$',
             'portfolio.views.journal_and_reflections', name="portfolio_journal_and_reflections"),
 
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/uploads$',
