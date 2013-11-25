@@ -32,11 +32,8 @@ from django.utils.http import base36_to_int
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_POST
 
-
 from courseware.model_data import FieldDataCache
 from courseware.masquerade import setup_masquerade
-
-
 
 from ratelimitbackend.exceptions import RateLimitException
 
@@ -70,6 +67,11 @@ import track.views
 
 from statsd import statsd
 from pytz import UTC
+
+#@begin:add change_photo_request
+#@date:2013-11-11
+from PIL import Image
+#@end
 
 log = logging.getLogger("mitx.student")
 AUDIT_LOG = logging.getLogger("audit")
@@ -318,15 +320,6 @@ class StudentModule(models.Model):
     module_id = models.CharField(max_length=255, db_index=True)
 
 
-
-
-from courseware.model_data import FieldDataCache, DjangoKeyValueStore
-from xblock.fields import Scope
-from courseware.grades import grade
-
-          
-       
-    
 @login_required
 @ensure_csrf_cookie
 def dashboard(request):
@@ -361,11 +354,7 @@ def dashboard(request):
                                                     module_id=m.location)) > 0:
                     count_history=count_history+1
             courses.append(c)
-
-            # check grade total, refer to lms/djangoapps/courseware/grades.py
-            grade_precent=grade(request.user,request,c)['percent']
-            
-            if count_history==chapter_count and grade_precent >= 0.85:
+            if count_history==chapter_count:
                 courses_complated.append(c)
             else:
                 courses_incomplated.append(c)
@@ -410,6 +399,32 @@ def dashboard(request):
         'exam_registrations': exam_registrations,
         }
 #@end
+    #@begin:change photo by Dashboard
+    #@date:2013-11-24
+    if request.method == 'POST':
+        up = UserProfile.objects.get(user=request.user)  
+        img_name = up.photo
+        file_img = request.FILES['photo']
+        if file_img:
+            if not img_name:
+                time_int = int(time.time()*100)    
+                random_int1 = random.randint(10000,100000000)
+                random_int2 = random.randint(10000,100000000)
+                zf1 = '%d' %time_int
+                zf2 = '%d' %random_int1
+                zf3 = '%d' %random_int2
+                filename = file_img.name
+                zf4 = filename.split('.')[-1]
+                img_name = zf1 + zf2 + zf3 + '.' + zf4
+            img = Image.open(file_img)
+            img.thumbnail((110,110),Image.ANTIALIAS)
+            img.save('/home/tahoe/edx_all/edx-platform/lms/static/images/photos/'+img_name)
+       
+        if not up.photo:
+            up.photo = img_name
+            up.save()
+    #@end 
+
     return render_to_response('dashboard.html', context)
 
 def try_change_enrollment(request):

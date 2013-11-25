@@ -99,7 +99,6 @@
             }
 /*@end*/
 
-    
   (function() {
 
     $(".email-settings").click(function(event) {
@@ -306,10 +305,10 @@
    
     var AllowImgFileSize=512;
     var AllowImgWidth=1024;
-    var AllowImgHeight=768;  
+    var AllowImgHeight=768; 
+    var fileImg = document.getElementById("id_photo"); 
     
     <!--check file choose-->
-    var fileImg = document.getElementById("id_photo");
     if (fileImg.value=="")
     {
       $("#change_photo_error").html("Please choose a image file.").stop().css("display", "block");
@@ -324,8 +323,19 @@
     if (fileImg_ext!="jpg" && fileImg_ext!="peg" && fileImg_ext!="png")
     {
       $("#change_photo_error").html("The image file shoult be .jpg or .png.").stop().css("display", "block");
-      fileImg.select()
-      document.execCommand("Delete");
+      //fileImg.select()
+      //document.execCommand("Delete");
+      fileImg.focus();
+      return false;
+    }
+    <!------------------------------------------>
+
+    <!--check file size(less than 2m)-->
+    var file_size =  fileImg.files[0].size;
+
+    if (file_size>2048*1024)
+    {
+      $("#change_photo_error").html("The image size shoult be less than 2M.").stop().css("display", "block");
       fileImg.focus();
       return false;
     }
@@ -366,14 +376,12 @@
             </div>${_("User Photo")}
             (<a href="#change_photo" rel="leanModal" class="edit-photo">${_("edit")}</a>)
           </span> 
-          <div style="text-align:center;padding-top:5px;width:110px;height:110px;margin:0 auto;">
-             <span style="margin:auto;">
-             % if user.profile.photo:
-              <img src="/static/images/photos/${ user.profile.photo }" style="" alt="photo" />
-             % else:
-              <img src="/static/images/photos/photo_temp.png" style="" alt="photo" />
-             % endif
-             </span>   
+          <div style="text-align:center;margin-top:6px;height:110px;">
+                % if user.profile.photo:
+                  <img src="/static/images/photos/${ user.profile.photo }" style="" alt="photo" />
+                % else:
+                  <img src="/static/images/photos/photo_temp.png" style="" alt="photo" />
+                % endif
           </div>
         </li>
 <!--@end-->          
