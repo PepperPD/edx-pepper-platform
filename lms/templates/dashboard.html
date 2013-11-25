@@ -755,15 +755,13 @@
                 
             <link rel="stylesheet" href="/static/tmp-resource/css/main.css" type="text/css" media="screen" />
             % if course.id in show_courseware_links_for:
-              % if course.has_ended():
-                <a href="${course_target}" class="enter-course archived">${_('View Archived Course')}</a>
-              % else:
+     
                 <a href="${course_target}" class="enter-course dashboard-btn1">${_('View Course')}</a>
 				<!--@begin:make the 'View Portfolio' button enabled-->
 				<!--@date:2013-11-02-->
 				<a href="${reverse('portfolio_about_me',args=[course.id])}" class="enter-course dashboard-btn2" style="margin-left:10px;">${_('View Portfolio')}</a>
 				<!--@end-->
-              % endif
+  
             % endif
 
            
