@@ -23,8 +23,9 @@ from student.models import CourseEnrollment
   #page-nav,#page-footer{
   width:960px;
   }
+  
   a.btnx:hover {
-  background:#fc5;
+  background:#6e8194;
   transition-delay: 0s, 0s, 0s;
   transition-duration: 0.25s, 0.25s, 0.25s;
   transition-property:color, background,​ box-shadow;
@@ -34,7 +35,7 @@ from student.models import CourseEnrollment
   }
   a.btnx {
   text-decoration:none;
-  background-color:#f93;
+  background-color:#556370;
   text-decoration: none;
   padding-bottom: 7px;
   padding-left: 10px;
@@ -46,7 +47,7 @@ from student.models import CourseEnrollment
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
   font-family: 'Open Sans',Verdana,Geneva,sans-serif;
-  box-shadow: #a93 0px 2px 1px 0px;
+  box-shadow: #949494 0px 2px 1px 0px;
   color:#fff;
   transition-timing-function:cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1), cubic-bezier(0.42, 0, 0.58, 1);
   }
@@ -146,11 +147,11 @@ from student.models import CourseEnrollment
 				  % if user.is_authenticated():
 
 				  % if CourseEnrollment.is_enrolled(request.user, course.id):
-				  <a style="width:285px;display:block;margin:0 10px 10px 10px;text-align:center;" href="${reverse('courseware', args=[course.id])}" class=" btnx">Access Course</a>
+				  <a style="width:285px;display:block;margin:0 10px 10px 10px;text-align:center;" href="${reverse('courseware', args=[course.id])}" class=" btnx _del_line">Access Course</a>
 
 				  % else:
 
-				  <a style="width:285px;display:block;margin:0 10px 10px 10px;text-align:center;" href="${reverse('about_course', args=[course.id])}" class="register btnx">Sign Up & Start Course</a>
+				  <a style="width:285px;display:block;margin:0 10px 10px 10px;text-align:center;" href="${reverse('about_course', args=[course.id])}" class="register btnx _del_line">Sign Up & Start Course</a>
 
 				   % endif
 				  % endif
