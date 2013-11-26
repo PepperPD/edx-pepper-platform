@@ -18,6 +18,7 @@
 <!--@date:2013-11-02-->
 <style type="text/css" media="screen">
   #btn-dashboard{display:none;}
+  #image_uploading{display:none;}
 </style>
 <!--@end-->
 
@@ -98,7 +99,6 @@
             }
 /*@end*/
 
-    
   (function() {
 
     $(".email-settings").click(function(event) {
@@ -300,6 +300,50 @@
       return false;
     });
   })(this)
+
+  $("#change_photo_form").submit(function(){
+   
+    var AllowImgFileSize=512;
+    var AllowImgWidth=1024;
+    var AllowImgHeight=768; 
+    var fileImg = document.getElementById("id_photo"); 
+    
+    <!--check file choose-->
+    if (fileImg.value=="")
+    {
+      $("#change_photo_error").html("Please choose a image file.").stop().css("display", "block");
+      fileImg.focus();
+      return false;
+    }
+    <!------------------------------------------>
+
+    <!--check file type-->
+    var fileImg_url=fileImg.value.toLowerCase();
+    var fileImg_ext=fileImg_url.substring(fileImg_url.length-3,fileImg_url.length);
+    if (fileImg_ext!="jpg" && fileImg_ext!="peg" && fileImg_ext!="png")
+    {
+      $("#change_photo_error").html("The image file shoult be .jpg or .png.").stop().css("display", "block");
+      //fileImg.select()
+      //document.execCommand("Delete");
+      fileImg.focus();
+      return false;
+    }
+    <!------------------------------------------>
+
+    <!--check file size(less than 2m)-->
+    var file_size =  fileImg.files[0].size;
+
+    if (file_size>2048*1024)
+    {
+      $("#change_photo_error").html("The image size shoult be less than 2M.").stop().css("display", "block");
+      fileImg.focus();
+      return false;
+    }
+    <!------------------------------------------>
+
+    $('#image_uploading').show(); 
+    $('#change_photo_form').submit(); 
+    });
   </script>
 </%block>
 
@@ -331,7 +375,14 @@
           <span class="title"><div class="icon email-icon" style="background-image:url(/static/images/portal-icons/photo.png) !important;">
             </div>${_("User Photo")}
             (<a href="#change_photo" rel="leanModal" class="edit-photo">${_("edit")}</a>)
-          </span> <span class="data"></span>
+          </span> 
+          <div style="text-align:center;margin-top:6px;height:110px;">
+                % if user.profile.photo:
+                  <img src="/static/images/photos/${ user.profile.photo }" style="" alt="photo" />
+                % else:
+                  <img src="/static/images/photos/photo_temp.png" style="" alt="photo" />
+                % endif
+          </div>
         </li>
 <!--@end-->          
         <li>
@@ -775,23 +826,36 @@
       <h2>${_('Add Profile Picture').format(course_number='<span id="email_settings_course_number"></span>')}</h2>
       <hr/>
     </header>
-    <form id="" method="post">
+    <form id="change_photo_form" method="post" enctype="multipart/form-data" action="dashboard">
+      <!--@begin:Shown completed course list-->
+      <!--@date:2013-11-24-->
+      <div id="change_photo_error" class="modal-form-error"> </div>
+      <!--@end-->
       <fieldset>
         <div class="input-group">
-
           <label>
-            <div style="border:5px solid #999;width:110px;height:110px;">
-              <img src="" style="" alt="" />
+            <div style="border:5px solid #999;width:110px;height:110px;text-align:center;">
+              % if user.profile.photo:
+      			        <img src="/static/images/photos/${ user.profile.photo }" style="" alt="photo" />
+      			  % else:
+      			        <img src="/static/images/photos/photo_temp.png" style="" alt="photo" />
+      			  % endif		
             </div>
           </label>
           <label style="margin:20px 0;display:block;">
-            <input type="file" name="" value="Chose a file" />
+            <input type="file" name="photo" id="id_photo" value="Choose a file" />
           </label>
           <label>
             Limited to 110 * 110
-          </label>             
+          </label>  
+          <div id="image_uploading" style="text-align:center;">
+            <img src="/static/images/ora-loading.gif" style=""/> 
+          </div>              
         </div>
+
       </fieldset>
+	  <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}"/>
+     
       <div class="submit">
         <input type="submit" class="btnx" id="submit" value="Upload" />
       </div>          

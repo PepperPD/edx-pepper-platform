@@ -3,17 +3,11 @@
 <%! from django.utils.translation import ugettext as _ %>
 <%namespace name='static' file='static_content.html'/>
 
-<!--@begin:add new style("border-top:1px solid...") to show the line above-->
-<!--@date:2013-11-02-->
 <div class="wrapper wrapper-footer" style="border-top:1px solid #8a8c8f;box-shadow:0 -1px 5px 0 rgba(0, 0, 0, 0.1);z-index:11">
-<!--@end-->
-
   <footer id="page-footer">
     <div class="colophon" style="width:500px;">
       <nav class="nav-colophon">
       <ol>
-<!--@begin:Hide the edx default About and Jobs-->
-<!--@date:2013-11-02-->        
           <!-- <li class="nav-colophon-01"> -->
           <!-- <a id="about" href="${marketing_link('ABOUT')}"> -->
           <!--     ${_("About")} -->
@@ -24,35 +18,25 @@
           <!--     ${_("Jobs")} -->
           <!-- </a> -->
           <!-- </li> -->
-<!--@end-->
-<!--@begin:Change the line of footer-->
-<!--@date:2013-11-02-->
           <li class="nav-colophon-03">
           <a id="press" href="/press">
               ${_("Press")}
           </a>
           </li>
           <li class="nav-colophon-04">
-          <a id="faq" href="/intro_faq">
+          <a id="faq" href="/faq">
               ${_("FAQ")}
           </a>
           </li>
           <li class="nav-colophon-05">
-          <a id="contact" href="/_contact">
+          <a id="contact" href="/contact">
               ${_("Contact")}
           </a>
           </li>
-<!--@end-->          
       </ol>
       </nav>
     </div>
-<!--@begin:Chagne the footer logo-->
-<!--@date:2013-11-02-->    
     <img style="float:right;width:285px;height:58px;" src="${MITX_ROOT_URL}/static/images/pcgeducationdown.png" />
-<!--@end-->
-
-<!--@begin:Remove some default footer info-->
-<!--@date:2013-11-02-->    
     <div class="references">
       <!-- <nav class="nav-social"> -->
       <!--   <ul> -->
@@ -96,7 +80,6 @@
         </ul>
       </nav>
 -->
-<!--@end-->
     </div>
   </footer>
 </div>
