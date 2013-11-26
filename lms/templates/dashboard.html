@@ -426,16 +426,17 @@
 			</div>
 
 			<div style="line-height:30px;">Grade Level:
+
+              <% gn=list() %>
 			  % if user.profile.grade_level_id:
 			  % for i,c in enumerate(user.profile.grade_level_id.split(',')):
 			  % if len(c)>0:
-			  % if i>0:
-			  ,
-			  % endif
-			  ${get_grade_level(c)['name']}
+			  <% gn.append(get_grade_level(c)['name']) %>
 			  % endif
 			  % endfor
 			  % endif
+              ${", ".join(gn)}
+
 			  (<a href="#change_grade_level" rel="leanModal">edit</a>)
 			</div>
 			<div style="line-height:30px;">Major Subject Area:
