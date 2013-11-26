@@ -136,17 +136,17 @@
                 <link rel="stylesheet" href="/static/tmp-resource/css/main.css" type="text/css" media="screen" />
 
             %if course.id in show_courseware_links_for:
-                <a href="${course_target}" class="enter-course dashboard-btn2">${_('View Course')}</a>
-				<!--@begin:make the 'View Portfolio' button enabled-->
-				<!--@date:2013-11-02-->
-				<a href="${reverse('portfolio_about_me',args=[course.id])}" class="enter-course dashboard-btn1" style="margin-left:10px;">${_('View Portfolio')}</a>
-				<!--@end-->
+				      <!--@begin:make the 'View Portfolio' button enabled-->
+				      <!--@date:2013-11-02-->
+				      <a href="${reverse('portfolio_about_me',args=[course.id])}" class="enter-course dashboard-btn1">${_('View Portfolio')}</a>
+				      <!--@end-->
+              <a href="${course_target}" class="enter-course dashboard-btn2" style="margin-left:10px;">${_('View Course')}</a>
             %endif
 
-	    % if settings.MITX_FEATURES['ENABLE_INSTRUCTOR_EMAIL'] and modulestore().get_modulestore_type(course.id) == MONGO_MODULESTORE_TYPE:
-	      <!-- Only show the Email Settings link/modal if this course has bulk email feature enabled -->
-            <a href="/download_certificate" target="blank" class="enter-course dashboard-btn1" style="margin-left:10px;float:right;">${_('Download Your PDF Certificate')}</a>
-	    % endif
-          </section>
-        </article>
+  	    % if settings.MITX_FEATURES['ENABLE_INSTRUCTOR_EMAIL'] and modulestore().get_modulestore_type(course.id) == MONGO_MODULESTORE_TYPE:
+  	      <!-- Only show the Email Settings link/modal if this course has bulk email feature enabled -->
+              <a href="/download_certificate" target="blank" class="enter-course dashboard-btn1" style="margin-left:10px;float:right;">${_('Download Your PDF Certificate')}</a>
+  	    % endif
+            </section>
+          </article>
       % endfor

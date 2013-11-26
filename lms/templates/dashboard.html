@@ -311,7 +311,7 @@
     <!--check file choose-->
     if (fileImg.value=="")
     {
-      $("#change_photo_error").html("Please choose a image file.").stop().css("display", "block");
+      $("#change_photo_error").html("Update your avatar by uploading an image from your compute.").stop().css("display", "block");
       fileImg.focus();
       return false;
     }
@@ -322,7 +322,7 @@
     var fileImg_ext=fileImg_url.substring(fileImg_url.length-3,fileImg_url.length);
     if (fileImg_ext!="jpg" && fileImg_ext!="peg" && fileImg_ext!="png")
     {
-      $("#change_photo_error").html("The image file shoult be .jpg or .png.").stop().css("display", "block");
+      $("#change_photo_error").html("We accept image only in JPG or PNG.").stop().css("display", "block");
       //fileImg.select()
       //document.execCommand("Delete");
       fileImg.focus();
@@ -335,7 +335,7 @@
 
     if (file_size>2048*1024)
     {
-      $("#change_photo_error").html("The image size shoult be less than 2M.").stop().css("display", "block");
+      $("#change_photo_error").html("The file size CANNOT exceed 2MB (2048 KB).").stop().css("display", "block");
       fileImg.focus();
       return false;
     }
@@ -376,7 +376,7 @@
             </div>${_("User Photo")}
             (<a href="#change_photo" rel="leanModal" class="edit-photo">${_("edit")}</a>)
           </span> 
-          <div style="text-align:center;margin-top:6px;height:110px;">
+          <div style="text-align:center;margin-top:5px;">
                 % if user.profile.photo:
                   <img src="/static/images/photos/${ user.profile.photo }" style="" alt="photo" />
                 % else:
@@ -764,13 +764,11 @@
                 
             <link rel="stylesheet" href="/static/tmp-resource/css/main.css" type="text/css" media="screen" />
             % if course.id in show_courseware_links_for:
-     
-                <a href="${course_target}" class="enter-course dashboard-btn1">${_('View Course')}</a>
-				<!--@begin:make the 'View Portfolio' button enabled-->
-				<!--@date:2013-11-02-->
-				<a href="${reverse('portfolio_about_me',args=[course.id])}" class="enter-course dashboard-btn2" style="margin-left:10px;">${_('View Portfolio')}</a>
-				<!--@end-->
-  
+      				<!--@begin:make the 'View Portfolio' button enabled-->
+      				<!--@date:2013-11-02-->
+      				<a href="${reverse('portfolio_about_me',args=[course.id])}" class="enter-course dashboard-btn1">${_('View Portfolio')}</a>
+      				<!--@end-->
+              <a href="${course_target}" class="enter-course dashboard-btn2" style="margin-left:10px;">${_('View Course')}</a>
             % endif
 
            
@@ -846,7 +844,7 @@
             <input type="file" name="photo" id="id_photo" value="Choose a file" />
           </label>
           <label>
-            Limited to 110 * 110
+            The image will be automatically scaled to fit within 110x110 pixels.
           </label>  
           <div id="image_uploading" style="text-align:center;">
             <img src="/static/images/ora-loading.gif" style=""/> 
