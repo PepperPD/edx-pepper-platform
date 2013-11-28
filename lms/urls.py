@@ -20,11 +20,11 @@ urlpatterns = (
     url(r'^contract/import_user_submit/$', 'contract.views.import_user_submit',name="contract_import_user_submit"),
     url(r'^contract/submit$', 'contract.views.submit_contract',name="contract_submit"),
     
-    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people$', 'people.views.course_index', name="people"),
-    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/my_people/$', 'people.views.my_course_index', name="my_people"),
+    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_search$', 'people.views.course_index', name="people"),
+    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_network$', 'people.views.my_course_index', name="my_people"),
 
-    url(r'^people_global$', 'people.views.people', name="people"),
-    url(r'^my_people/$', 'people.views.my_people', name="my_people"),
+    url(r'^people_search$', 'people.views.people', name="people"),
+    url(r'^people_network$', 'people.views.my_people', name="my_people"),
 
     url(r'^download_certificate$', 'student.views.download_certificate', name="download_certificate"),
     url(r'^latest_news$', 'student.views.latest_news', name="latest_news"),
