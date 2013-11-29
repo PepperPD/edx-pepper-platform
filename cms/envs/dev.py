@@ -225,6 +225,6 @@ import os,sys
 sys.path.append("..") # => /home/tahoe/edx_all
 from siteconf import *
 
-
+TAHOE_PREVIEW_LMS_BASE = 'localhost:8444'
 if TAHOE_PREVIEW_LMS_BASE:
     MITX_FEATURES['PREVIEW_LMS_BASE'] = TAHOE_PREVIEW_LMS_BASE
