@@ -83,7 +83,7 @@
     <form id="form_import" method="post" style="margin:0;">
       <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
       <input type="hidden" name="cohort_id" value="">
-      <div class="message"></div>
+      <div class="message" style="padding:10px"></div>
       <fieldset style="margin:0px;">
         <div class="input-group" style="margin:0px;padding:20px;">
           <label style="display:block;margin:0;color:#000;" >
@@ -138,6 +138,7 @@ $(".import").click(function(){
    $("#form_import input[name=cohort_id]").val($(this).attr("cohort_id"))
 });
 $("#form_import").submit(function(){
+
   $("#form_import .message").html("")
   $(this).ajaxSubmit({
       type:'post',

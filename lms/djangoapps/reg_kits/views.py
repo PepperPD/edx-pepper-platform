@@ -246,6 +246,8 @@ def user_form(request,user_id=None):
     return render_to_response('reg_kits/user.html', {"ui":"form","profile":c})
 USER_CVS_COL_EMAIL=0
 USER_CVS_COUNT_COL=1
+
+
 def validate_user_cvs_line(line):
     email=line[USER_CVS_COL_EMAIL]
     exist=False
@@ -279,8 +281,21 @@ def import_user_submit(request):
             # f.seek(0)
             # r=csv.reader(f,dialect)
             r=csv.reader(f,delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+
+            rl = []
+            rl.extend(r)
+            
             cohort_id=request.POST.get("cohort_id")
-            for i,line in enumerate(r):
+            cohort=Cohort.objects.get(id=cohort_id)
+            
+            if cohort.licences < UserProfile.objects.filter(cohort_id=cohort_id).count() + len(rl):
+                raise Exception("Licences limit exceeded")
+
+
+
+            
+            for line in rl:
                 exist=validate_user_cvs_line(line)
                 # if(exist):
                 #     raise Exception("An user already exists, or duplicate lines.")
@@ -312,7 +327,7 @@ def import_user_submit(request):
             }            
         except Exception as e:
             db.transaction.rollback()
-            message={'success': False,'message':'Import error: %s At cvs line: %s, Nobody impored.' % (e,count_success)}
+            message={'success': False,'error':'Import error: %s. At cvs line: %s, Nobody impored.' % (e,count_success)}
     return HttpResponse(json.dumps(message))
 def send_invite_email(request):
     try:
@@ -453,7 +468,6 @@ def import_school_submit(request):
             # f.seek(0)
             # r=csv.reader(f,dialect)
             r=csv.reader(f,delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            district_id=request.POST.get('district_id')
             for i,line in enumerate(r):
                 exist=validate_school_cvs_line(line,district_id)
                 if(exist):

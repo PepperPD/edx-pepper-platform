@@ -154,6 +154,7 @@ class UserProfile(models.Model):
     subscription_status=models.CharField(blank=False, max_length=20, db_index=False)
     subscription_start_date=models.DateTimeField(auto_now_add=False, db_index=False)
 #@end
+
     photo = models.CharField(blank=True, max_length=50, db_index=False)
     meta = models.TextField(blank=True)  # JSON dictionary for future expansion
     courseware = models.CharField(blank=True, max_length=255, default='course.xml')
