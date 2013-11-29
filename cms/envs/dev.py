@@ -86,10 +86,11 @@ DATABASES = {
 #         'PORT': '3306',
 #     }
 # }
-
-LMS_BASE = "localhost:8111"
-MITX_FEATURES['PREVIEW_LMS_BASE'] = "localhost:8111"
-
+#@begin:for preview draft in studio
+#@data:2013-11-29
+LMS_BASE = "www1.pepperpd.com"
+MITX_FEATURES['PREVIEW_LMS_BASE'] = "www1.pepperpd.com:8444"
+#@end
 REPOS = {
     'edx4edx': {
         'branch': 'master',
@@ -225,6 +226,5 @@ import os,sys
 sys.path.append("..") # => /home/tahoe/edx_all
 from siteconf import *
 
-TAHOE_PREVIEW_LMS_BASE = 'localhost:8444'
 if TAHOE_PREVIEW_LMS_BASE:
     MITX_FEATURES['PREVIEW_LMS_BASE'] = TAHOE_PREVIEW_LMS_BASE
