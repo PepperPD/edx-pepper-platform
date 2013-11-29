@@ -1,0 +1,222 @@
+commit 718e59a7e77bd1c65f41711e006f3ba4cf741cc7
+Author: victor fence <fclddcn@gmail.com>
+Date:   Wed Oct 30 09:21:37 2013 +0000
+
+    2013-10-30
+
+diff --git a/lms/djangoapps/people/views.py b/lms/djangoapps/people/views.py
+index 1cbd658..a9a8a94 100644
+--- a/lms/djangoapps/people/views.py
++++ b/lms/djangoapps/people/views.py
+@@ -1,15 +1,13 @@
+ from django.http import Http404
+ from mitxmako.shortcuts import render_to_response
+ from django.db import connection
+-
+ from student.models import CourseEnrollment,get_user_by_id
+ from django.contrib.auth.models import User
+-
+-from courseware.courses import (get_courses, get_course_with_access,
+-                                get_courses_by_university, sort_by_announcement)
+-
++from courseware.courses import (get_courses, get_course_with_access, get_courses_by_university, sort_by_announcement)
+ from django.core.paginator import Paginator
+ 
++from user import User
++
+ def dictfetchall(cursor):
+     '''Returns a list of all rows from a cursor as a column: result dict.
+     Borrowed from Django documentation'''
+@@ -98,3 +96,13 @@ where is_active=1 and user_id='{user_id}')""".format(user_id=request.user.id)
+     return render_to_response('people/my_people.html', context)
+ 
+ 
++
++def sphinx(request):
++    index=User()
++
++    r=User.objects.filter(user_name__search='victor0')
++    
++    from django.http import HttpResponse
++
++    print(dir(r))
++    return HttpResponse(dir(r))
+diff --git a/lms/envs/dev.py b/lms/envs/dev.py
+index 9d6a50b..2a13464 100644
+--- a/lms/envs/dev.py
++++ b/lms/envs/dev.py
+@@ -51,6 +51,9 @@ DATABASES = {
+     }
+ }
+ 
++
++INSTALLED_APPS += ('django_sphinx_db', )
++
+ DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.mysql',
+@@ -59,9 +62,30 @@ DATABASES = {
+         'PASSWORD': 'lebbeb',
+         'HOST': '127.0.0.1',
+         'PORT': '3306',
+-    }
++    },
++    'sphinx':  {
++        'ENGINE': 'django_sphinx_db.backend.sphinx',
++        # The database name does not matter.
++        'NAME': '',
++        # There is no user name or password.
++        'USER': '',
++        'PASSWORD': '',
++        # Don't use localhost, this will result in using a UDS instead of TCP...
++        'HOST': '127.0.0.1',
++        'PORT': '9306',
++    },    
++    
+ }
+ 
++DATABASE_ROUTERS = (
++    'django_sphinx_db.routers.SphinxRouter',
++)    
++
++
++
++
++
++
+ CACHES = {
+     # This is the cache used for most things.
+     # In staging/prod envs, the sessions also live here.
+diff --git a/lms/templates/dashboard.html b/lms/templates/dashboard.html
+index 74d1891..5f7eac9 100644
+--- a/lms/templates/dashboard.html
++++ b/lms/templates/dashboard.html
+@@ -376,6 +376,10 @@
+ 		<li>
+ 
+ 		  <div style="font-family: 'Open Sans';font-size:12px;">
++			<div style="line-height:30px;">State:
++	          Alabama
++			</div>
++            
+ 			<div style="line-height:30px;">District:
+ 			  % if user.profile.district_id:
+ 			  ${get_district(user.profile.district_id)['name']}
+diff --git a/lms/templates/register.html b/lms/templates/register.html
+index c6f6118..d9f2bdf 100644
+--- a/lms/templates/register.html
++++ b/lms/templates/register.html
+@@ -238,6 +238,68 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
+             $("#grade_level_id").val(arVals.join());
+             }
+           </script>
++
++
++          
++          <li class="field text" id="field-name">
++            <label for="district_id" style="font-weight:bold;">${_('State')}</label>
++            <select autocomplete="off" name="state_id" placeholder="${_('example: Jane')}"
++                    onchange="reload_school_dropdown($(this).val())">
++              <option value="">--</option>
++<option>Alabama</option>
++<option>Alaska</option>
++<option>Arizona</option>
++<option>Arkansas</option>
++<option>California</option>
++<option>Colorado</option>
++<option>Connecticut</option>
++<option>Delaware</option>
++<option>Florida</option>
++<option>Georgia</option>
++<option>Hawaii</option>
++<option>Idaho</option>
++<option>Illinois</option>
++<option>Indiana</option>
++<option>Iowa</option>
++<option>Kansas</option>
++<option>Kentucky</option>
++<option>Louisiana</option>
++<option>Maine</option>
++<option>Maryland</option>
++<option>Massachusetts</option>
++<option>Michigan</option>
++<option>Minnesota</option>
++<option>Mississippi</option>
++<option>Missouri</option>
++<option>Montana</option>
++<option>Nebraska</option>
++<option>Nevada</option>
++<option>NewHampshire</option>
++<option>NewJersey</option>
++<option>NewMexico</option>
++<option>NewYork</option>
++<option>NorthCarolina</option>
++<option>NorthDakota</option>
++<option>Ohio</option>
++<option>Oklahoma</option>
++<option>Oregon</option>
++<option>Pennsylvania</option>
++<option>RhodeIsland</option>
++<option>SouthCarolina</option>
++<option>SouthDakota</option>
++<option>Tennessee</option>
++<option>Texas</option>
++<option>Utah</option>
++<option>Vermont</option>
++<option>Virginia</option>
++<option>Washington</option>
++<option>WestVirginia</option>
++<option>Wisconsin</option>
++<option>Wyoming</option>
++
++            </select>
++          </li>
++          
+           <li class="field text" id="field-name">
+             <label for="district_id" style="font-weight:bold;">${_('District')}</label>
+             <select autocomplete="off" name="district_id" placeholder="${_('example: Jane')}"
+@@ -247,7 +309,9 @@ from prop_dict.models import schools,districts,subject_areas,grade_levels,years_
+               <option value="${item['id']}">${item['name']}</option>
+               %endfor  
+             </select>
+-          </li>          
++          </li>
++
++          
+           <li class="field required text" id="field-name">
+             <label for="school_id">${_('School')}</label>
+             <select autocomplete="off" id="school_id" name="school_id">
+diff --git a/lms/urls.py b/lms/urls.py
+index e6ac45e..5f9722c 100644
+--- a/lms/urls.py
++++ b/lms/urls.py
+@@ -10,21 +10,24 @@ if settings.DEBUG or settings.MITX_FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
+     admin.autodiscover()
+ 
+ urlpatterns = ('',  # nopep8
++        url(r'^sphinx$', 'people.views.sphinx'),
++
++
+         url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people/$',
+             'people.views.course_index', name="people"),
+-               
++
+         url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/my_people/$',
+             'people.views.my_course_index', name="my_people"),
+-                
+-               
++
++
+         url(r'^people/$', 'people.views.people', name="people"),
+         url(r'^my_people/$', 'people.views.my_people', name="my_people"),
+ 
+-      
++
+       url(r'^download_certificate/$', 'student.views.download_certificate', name="download_certificate"),
+                url(r'^latest_news/$', 'student.views.latest_news', name="latest_news"),
+                url(r'^access_resource_library/$', 'access_resource_library.views.index', name="access_resource_library"),
+-               
++
+     # certificate view
+ 
+     url(r'^update_certificate$', 'certificates.views.update_certificate'),
