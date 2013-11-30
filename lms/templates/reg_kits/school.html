@@ -48,7 +48,7 @@
           <td><input type="checkbox" name="id" value="${item.id}"/></td>
           <td>${item.id}</td>
           <td><a href="${reverse('school_form',args=[item.id])}">${item.name}</a></td>
-          <td>${District.objects.get(id=item.district_id).name} - ${District.objects.get(id=item.district_id).id}</td>
+          <td>${District.objects.get(id=item.district_id).name} - ${District.objects.get(id=item.district_id).code}</td>
           <td align="center"><a href="${reverse('user')}?school_id=${item.id}">Show Users</a></td>
         </tr>
         %endfor          
@@ -160,7 +160,7 @@ var form=$("#form");
 // submit form
 form.submit(function(){
   if(!new FormValidator().check(this))return false;
-  var flds=["name","district_id","csrfmiddlewaretoken"];
+  var flds=["id","name","district_id","csrfmiddlewaretoken"];
   var data=getFormData(this,flds);
   $("#message").html("Submiting");
   $.post('${reverse("school_submit")}',data,
