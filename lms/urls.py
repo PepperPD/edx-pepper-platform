@@ -51,10 +51,12 @@ urlpatterns = (
     
     url(r'^reg_kits/import_user_submit/$', 'reg_kits.views.import_user_submit',name="import_user_submit"),
 
-    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people/$', 'people.views.course_index', name="people"),
-    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/my_people/$', 'people.views.my_course_index', name="my_people"),
-    url(r'^people/$', 'people.views.people', name="people"),
-    url(r'^my_people/$', 'people.views.my_people', name="my_people"),
+    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_search$', 'people.views.course_index', name="people"),
+    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_network$', 'people.views.my_course_index', name="my_people"),
+    url(r'^people_search$', 'people.views.people', name="people"),
+    url(r'^people_network$', 'people.views.my_people', name="my_people"),
+    url(r'^resource_library_global$', 'access_resource_library.views.index', name="access_resource_library"),
+ 
     url(r'^download_certificate/$', 'student.views.download_certificate', name="download_certificate"),
     url(r'^latest_news/$', 'student.views.latest_news', name="latest_news"),
     url(r'^access_resource_library/$', 'access_resource_library.views.index', name="access_resource_library"),

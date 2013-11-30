@@ -186,7 +186,7 @@ $("#form_import").submit(function(){
   <script>
     $("#form").submit(function(){
       if(!new FormValidator().check(this))return false;
-      var flds=["code","name","state_id","csrfmiddlewaretoken"]
+      var flds=["id","code","name","state_id","csrfmiddlewaretoken"]
       var data=getFormData(this,flds);
       $("#message").html("Submiting");
       $.post('${reverse("district_submit")}',data,
