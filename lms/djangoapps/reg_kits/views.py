@@ -65,7 +65,7 @@ def district_submit(request):
         raise Http404
     state_id = request.POST['state_id']
     try:
-        if request.POST['id']:
+        if request.POST.get('id'):
             d=District(request.POST['id'])
         else:
             d=District()        
@@ -108,7 +108,7 @@ def cohort_submit(request):
     if not request.user.is_authenticated:
         raise Http404
     try:
-        if request.POST['id']:
+        if request.POST.get('id'):
             d=Cohort(request.POST['id'])
         else:
             d=Cohort()
@@ -157,7 +157,7 @@ def school_submit(request):
     if not request.user.is_authenticated:
         raise Http404
     try:
-        if request.POST['id']:
+        if request.POST.get('id'):
             d=School(request.POST['id'])
         else:
             d=School()
@@ -212,7 +212,7 @@ def user_submit(request):
     if not request.user.is_authenticated:
         raise Http404
     try:
-        if request.POST['id']:
+        if request.POST.get('id'):
             profile=UserProfile.objects.get(user_id=request.POST['id'])
             user=User.objects.get(id=request.POST['id'])
         else:
@@ -257,11 +257,11 @@ def validate_user_cvs_line(line):
         if len(item.strip()):
             n=n+1
     if n != USER_CVS_COUNT_COL:
-        raise Exception("Wrong fields count.")
+        raise Exception("Wrong fields count")
     validate_email(email)
     
     if len(User.objects.filter(email=email)) > 0:
-        raise Exception("An account with the Email '{email}' already exists.".format(email=email))
+        raise Exception("An account with the Email '{email}' already exists".format(email=email))
         exist=True
     return exist
 
@@ -280,21 +280,13 @@ def import_user_submit(request):
             # dialect = csv.Sniffer().sniff(f.read(1024), delimiters=";,")
             # f.seek(0)
             # r=csv.reader(f,dialect)
-            r=csv.reader(f,delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-
-
+            r=csv.reader(f,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             rl = []
             rl.extend(r)
-            
             cohort_id=request.POST.get("cohort_id")
             cohort=Cohort.objects.get(id=cohort_id)
-            
             if cohort.licences < UserProfile.objects.filter(cohort_id=cohort_id).count() + len(rl):
                 raise Exception("Licences limit exceeded")
-
-
-
-            
             for line in rl:
                 exist=validate_user_cvs_line(line)
                 # if(exist):
@@ -327,7 +319,7 @@ def import_user_submit(request):
             }            
         except Exception as e:
             db.transaction.rollback()
-            message={'success': False,'error':'Import error: %s. At cvs line: %s, Nobody impored.' % (e,count_success)}
+            message={'success': False,'error':'Import error: %s. At cvs line: %s, Nobody imported.' % (e,count_success+1)}
     return HttpResponse(json.dumps(message))
 def send_invite_email(request):
     try:
@@ -383,7 +375,7 @@ def transaction_submit(request):
     if not request.user.is_authenticated:
         raise Http404
     try:
-        if request.POST['id']:
+        if request.POST.get('id'):
             d=Transaction(request.POST['id'])
         else:
             d=Transaction()
@@ -454,12 +446,14 @@ def validate_school_cvs_line(line,district_id):
         if len(item.strip()):
             n=n+1
     if n != SCHOOL_CVS_COUNT_COL:
-        raise Exception("Wrong fields count.")
+        raise Exception("Wrong fields count")
     if len(School.objects.filter(name=name,district_id=district_id)) > 0:
-        raise Exception("A school named '{name}' already exists in this district.".format(name=name))
+        raise Exception("A school named '{name}' already exists in this district".format(name=name))
+    
 def import_school_submit(request):
     if request.method == 'POST':
         f=request.FILES['file']
+        district_id=request.POST.get('district_id')
         count_success=0
         count_exist=0
         try:
@@ -467,7 +461,7 @@ def import_school_submit(request):
             # dialect = csv.Sniffer().sniff(f.read(1024), delimiters=";,\t",quotechar='\n')
             # f.seek(0)
             # r=csv.reader(f,dialect)
-            r=csv.reader(f,delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            r=csv.reader(f,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for i,line in enumerate(r):
                 exist=validate_school_cvs_line(line,district_id)
                 if(exist):
@@ -483,12 +477,12 @@ def import_school_submit(request):
             db.transaction.commit()
             # success information
             message={"success": True,
-                "message":"Success! %s school imported." % (count_success),
+                "message":"Success! %s school(s) imported." % (count_success),
                 "count_exist":count_exist,
                 "count_success":count_success
                 }                   
         except Exception as e:
             db.transaction.rollback()
             # failure information
-            message={'success': False,'error':'Import error: %s At cvs line: %s, Nobody impored.' % (e,count_success)}
+            message={'success': False,'error':'Import error: %s. At cvs line: %s, Nothing impored.' % (e,count_success+1)}
     return HttpResponse(json.dumps(message))

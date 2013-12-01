@@ -145,9 +145,9 @@ class UserProfile(models.Model):
     
 #@begin:Add some fields to student profile
 #@date:2013-11-15        
-    major_subject_area_id=models.CharField(blank=True, max_length=255, db_index=True)
+    major_subject_area_id=models.IntegerField(blank=True, null=True, db_index=True)
     grade_level_id=models.CharField(blank=True, max_length=255, db_index=True)
-    years_in_education_id=models.CharField(blank=True, max_length=255, db_index=True)
+    years_in_education_id=models.IntegerField(blank=True, null=True, db_index=True)
     first_name = models.CharField(blank=True, max_length=255, db_index=True)
     last_name = models.CharField(blank=True, max_length=255, db_index=True)
     bio = models.CharField(blank=True, max_length=255, db_index=True)    

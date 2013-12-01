@@ -418,7 +418,7 @@ def dashboard(request):
                 img_name = zf1 + zf2 + zf3 + '.' + zf4
             img = Image.open(file_img)
             img.thumbnail((110,110),Image.ANTIALIAS)
-            img.save('/home/tahoe/edx_all/edx-platform/lms/static/images/photos/'+img_name)
+            img.save('/home/tahoe/edx_all/uploads/photos/'+img_name)
        
         if not up.photo:
             up.photo = img_name

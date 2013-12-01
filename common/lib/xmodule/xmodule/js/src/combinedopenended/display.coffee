@@ -449,7 +449,7 @@ class @CombinedOpenEnded
         @next_problem_button.show()
       else
         @reset_button.show()
-
+      $("#"+@answer_area.attr("id")+"_parent").remove()
 
   find_assessment_elements: ->
     @assessment = @$('input[name="grade-selection"]')
@@ -793,7 +793,7 @@ class @CombinedOpenEnded
       @errors_area.html(@out_of_sync_message)
 
   skip_assessment: () =>
-    $("#"+@answer_area.attr("id")+"_parent").remove()
+    #$("#"+@answer_area.attr("id")+"_parent").remove()
     @submit_button.attr("disabled",true)
     @submit_button.hide()
     data = {'assessment' : 1, 'score_list' : 1}

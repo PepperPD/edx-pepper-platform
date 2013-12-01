@@ -452,7 +452,7 @@ class MongoModuleStore(ModuleStoreBase):
                 depth -= 1
 
         return data
-    def _cache_children_category(self, items, category, depth=0):
+    def _cache_children_category(self, items, category, course_id,depth=0):
         """
         Returns a dictionary mapping Location -> item data, populated with json data
         for all descendents of items up to the specified depth.
@@ -462,14 +462,14 @@ class MongoModuleStore(ModuleStoreBase):
         """ 
         data = {}
         c_data=[]
+        sequence_id={}
         to_process = list(items)
         while to_process and depth is None or depth >= 0:
             children = []
             for item in to_process:
                 self._clean_item_data(item)
                 children.extend(item.get('definition', {}).get('children', []))
-                data[Location(item['location'])] = item
-
+                
             if depth == 0:
                 break
 
@@ -477,16 +477,34 @@ class MongoModuleStore(ModuleStoreBase):
             # http://www.mongodb.org/display/DOCS/Advanced+Queries#AdvancedQueries-%24or
             # for or-query syntax
             to_process = []
+            category_temp=''
             if children:
                 to_process = self._query_children_for_cache_children(children)
+                n=1
                 for child in children:
-                    if child.split('/')[-2] == category:
-                        c_data.append(self.get_item(child))
+                    name = child.split('/')[-1]
+                    current_category = child.split('/')[-2]
+                    parent_name=self.get_parent_locations(child,course_id)[0]['name']
+                    if category_temp!=current_category or parent_temp!=parent_name:
+                        category_temp=current_category
+                        parent_temp=parent_name
+                        n=1
+                    #sequence_id[name]=str(sequence_id[self.get_parent_locations(child,course_id)[0]['name']])+str(n)
+                    try:
+                        sequence_id[parent_name]
+                    except:
+                        sequence_id[parent_name]='1'
+                    
+                    sequence_id[name]=sequence_id[parent_name]+str(n)
+                    
+                    if category_temp == category:
+                        c_data.append([sequence_id[name],self.get_item(child)])
+                    n+=1
 
             # If depth is None, then we just recurse until we hit all the descendents
             if depth is not None:
                 depth -= 1
-
+        c_data.sort(key=lambda x: int(x[0]))
         return data,c_data
 
     def _load_item(self, item, data_cache, apply_cached_metadata=True):
@@ -531,12 +549,12 @@ class MongoModuleStore(ModuleStoreBase):
         return [self._load_item(item, data_cache,
                 apply_cached_metadata=(item['location']['category'] != 'course' or depth != 0)) for item in items]
 
-    def _load_items_category(self, items, category, depth=0):
+    def _load_items_category(self, items, category, course_id, depth=0):
         """
         Load a list of xmodules from the data in items, with children cached up
         to specified depth
         """
-        data_cache,c_data = self._cache_children_category(items, category, depth)
+        data_cache,c_data = self._cache_children_category(items, category, course_id, depth)
 
         # if we are loading a course object, if we're not prefetching children (depth != 0) then don't
         # bother with the metadata inheritance
@@ -630,7 +648,7 @@ class MongoModuleStore(ModuleStoreBase):
         '''
         location = Location.ensure_fully_specified(location)
         item = self._find_one(location)
-        module = self._load_items_category([item], category, depth)[1]
+        module = self._load_items_category([item], category, course_id, depth)[1]
         return module
     #@end
     def get_items(self, location, course_id=None, depth=0):

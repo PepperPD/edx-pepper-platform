@@ -43,11 +43,66 @@
   ##  <script type="text/javascript" src="${static.url('js/vendor/CodeMirror-2.25/mode/python/python.js')}"></script>
   <script type="text/javascript" src="${static.url('js/vendor/tiny_mce/tiny_mce.js')}"></script>
   <script type="text/javascript">
+    //var tinyMCE_init_sate=0;
+    //var switch_content_page=0;
+    /*
+    function tinyMCE_init()
+    {   
+        if(!tinyMCE_init_sate){
+
+          tinyMCE.init({
+            // General options
+            mode : "textareas",
+            editor_selector : "mceEditor",
+            theme : "advanced",
+            plugins : "contextmenu,paste,style,advimage,table,fullscreen",
+            // Theme options
+            theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,fontselect,fontsizeselect",
+            theme_advanced_buttons2 : "outdent,indent,blockquote,|,undo,redo,link,unlink,|,forecolor,backcolor,sub,sup,|,fullscreen",
+            theme_advanced_buttons3 : "tablecontrols,|,image",
+            theme_advanced_toolbar_location : "top",
+            theme_advanced_toolbar_align : "left",
+            theme_advanced_statusbar_location : "",
+            theme_advanced_resizing : false
+            });
+          tinyMCE_init_sate=1;
+      }
+    }
+    */
     function tinyMCE_class_init(name)
     {   
-      
+      /*
+        tinyMCE.init({
+          // General options
+          mode : "textareas",
+          editor_selector : name,
+          theme : "advanced",
+          plugins : "contextmenu,paste,style,advimage,table,fullscreen",
+          // Theme options
+          theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,fontselect,fontsizeselect",
+          theme_advanced_buttons2 : "outdent,indent,blockquote,|,undo,redo,link,unlink,|,forecolor,backcolor,sub,sup,|,fullscreen",
+          theme_advanced_buttons3 : "tablecontrols,|,image",
+          theme_advanced_toolbar_location : "top",
+          theme_advanced_toolbar_align : "left",
+          theme_advanced_statusbar_location : "",
+          theme_advanced_resizing : false
+          });
+      */
     }
-
+    /*
+     function tinyMCE_sate(val)
+    {
+      tinyMCE_init_sate=val;
+    }
+    function set_tinyMCE_switchPage(val)
+    {
+      switch_content_page=val;
+    }
+    function get_tinyMCE_switchPage()
+    {
+      return switch_content_page;
+    }
+    */
     <!-----staff_access------->
     function setup_debug(element_id, edit_link, staff_context){
       $('#' + element_id + '_trig').leanModal(); 
@@ -96,8 +151,8 @@
         $(".combined-rubric-container").remove();
         $(".problem-tools").remove();
         $(".legend-container").remove();
-        //$(".status-bar").remove();
-        //$("div").removeClass("problemwrapper"); 
+        $(".status-bar").remove();
+        $("div").removeClass("problemwrapper"); 
         $(".ui-accordion-header a, .ui-accordion-content .subtitle").each(function() {
           var elemText = $(this).text().replace(/^\s+|\s+$/g,''); // Strip leading and trailing whitespace
           var wordArray = elemText.split(" ");
@@ -212,11 +267,12 @@
 </div>
 
 <div class="main " style="margin-top:20px;">
+<section class="container">
   <div class="course-wrapper">
     <section class="course-index">
-      <div class="sub_tit" style="width:auto;"><span class="user_name">KelSunday</span></div>
+      <div class="sub_tit" style="width:auto;"><span class="user_name">${ user.username }</span></div>
       <a class="sub_menu" href="${reverse('portfolio_about_me',args=[course.id])}">About Me</a> 
-      <a class="sub_menu xz" href="${reverse('portfolio_journal_and_reflections',args=[course.id])}">My Course Work</a> 
+      <a class="sub_menu xz" href="${reverse('portfolio_journal_and_reflections',args=[course.id])}">My Coursework</a> 
       <div class="chapter">
       <ul>
       % for chapter in chapters:
@@ -228,9 +284,7 @@
       % endfor
       </ul>
       </div>
-      <a class="sub_menu" href="#">My Discussions</a> 
-      <a class="sub_menu" href="#">Peer Work to Review</a> 
-      <a class="sub_menu" href="#">My Work Needing Review</a> 
+      <a class="sub_menu" href="#">My Discussions</a>
     </section>
 
     <section class="course-content">
@@ -238,9 +292,16 @@
        %for con in content:
        <li>${con}</li><p/>
        %endfor
-      <!--<img src="/static/tmp-resource/image/temp19.jpg" style="padding-top:0px;padding-left:15px;"/>-->
+       %if len(content)==0 and chapter_id!='':
+        <div style="text-align:center;font-family:open sans;font-size:14.5pt;margin-top:90px;"><img src='/static/tmp-resource/image/PepperIcon_Important.png'/>&nbsp;There are currently no portfolio submissions in this session.</div>
+       %endif
+       %if len(content)==0 and chapter_id=='':
+        <div style="text-align:center;margin-top:30px;"><div style='font-family:Arial;font-size:24pt;color:#366092'>Key Assignments from My Course</div>
+        <div style='font-family:open sans;font-size:14.5pt;;margin-top:20px;'><img src='/static/tmp-resource/image/PepperIcon_StorePortfolio.png'/>&nbsp;Review and collaborate on coursework from each session by using the left side navigation menu.</div>
+       %endif
       </ol>
     </section>
+  </div>
   </div>
 </div>
 <br style="clear:both;">

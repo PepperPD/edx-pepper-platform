@@ -51,15 +51,21 @@ urlpatterns = (
     
     url(r'^reg_kits/import_user_submit/$', 'reg_kits.views.import_user_submit',name="import_user_submit"),
 
-    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people/$', 'people.views.course_index', name="people"),
-    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/my_people/$', 'people.views.my_course_index', name="my_people"),
-    url(r'^people/$', 'people.views.people', name="people"),
-    url(r'^my_people/$', 'people.views.my_people', name="my_people"),
-    url(r'^download_certificate/$', 'student.views.download_certificate', name="download_certificate"),
+    url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_search$', 'people.views.course_index', name="people"),
+    url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_network$', 'people.views.my_course_index', name="my_people"),
+
+    url(r'^people_search$', 'people.views.people', name="people"),
+    url(r'^people_network$', 'people.views.my_people', name="my_people"),
+    url(r'^resource_library_global$', 'access_resource_library.views.index', name="access_resource_library"),
+ 
+
+    #url(r'^download_certificate/$', 'student.views.download_certificate', name="download_certificate"),
     url(r'^latest_news/$', 'student.views.latest_news', name="latest_news"),
     url(r'^access_resource_library/$', 'access_resource_library.views.index', name="access_resource_library"),
     # certificate view
     url(r'^update_certificate$', 'certificates.views.update_certificate'),
+    url(r'^download_certificate$', 'certificates.views.download_certificate'),
+    url(r'^download_certificate_demo$', 'certificates.views.download_certificate_demo'),
     url(r'^$', 'branding.views.index', name="root"),   # Main marketing page, or redirect to courseware
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
     url(r'^login$', 'student.views.signin_user', name="signin_user"),
@@ -72,7 +78,9 @@ urlpatterns = (
     url(r'^change_change_grade_level$', 'student.views.change_grade_level_request', name="change_grade_level"),
     url(r'^change_major_subject_area$', 'student.views.change_major_subject_area_request', name="change_major_subject_area"),
     url(r'^change_bio$', 'student.views.change_bio_request', name="change_bio"),
-               url(r'^change_years_in_education$', 'student.views.change_years_in_education_request', name="change_years_in_education"),
+
+    url(r'^change_years_in_education$', 'student.views.change_years_in_education_request', name="change_years_in_education"),
+
     url(r'^accept_name_change$', 'student.views.accept_name_change'),
     url(r'^reject_name_change$', 'student.views.reject_name_change'),
     url(r'^pending_name_changes$', 'student.views.pending_name_changes'),
@@ -267,7 +275,9 @@ if settings.COURSEWARE_ENABLED:
             'instructor.views.legacy.instructor_dashboard', name="instructor_dashboard"),
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/about_me$',
             'portfolio.views.about_me', name="portfolio_about_me"),
-        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/journal_and_reflections$',
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/my_coursework$',
+            'portfolio.views.journal_and_reflections', name="portfolio_journal_and_reflections"),  
+        url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/my_coursework/(?P<chapter_id>[^/]+)$',
             'portfolio.views.journal_and_reflections', name="portfolio_journal_and_reflections"),           
         url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/portfolio/uploads$',
             'portfolio.views.uploads', name="portfolio_uploads"), 

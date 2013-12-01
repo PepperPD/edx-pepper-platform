@@ -227,29 +227,6 @@
 	margin-left:20px;
 }
 
-.course-index {
-	border-radius: 3px 0px 0px 3px;
-	border-right: 1px solid rgb(200, 200, 200);
-	-moz-box-sizing: border-box;
-	display: table-cell;
-	font-size: 14px;
-	position: relative;
-	vertical-align: top;
-	width: 280px;
-}
-.course-content {
-	-moz-box-sizing: border-box;
-	display: table-cell;
-	margin-top: 30px;
-}
-.but_search {
-	float:left;
-	width:200px;
-	margin-left:20px;
-	margin-top:20px;
-}
-
-
 
 .nav {
 	display: block;
@@ -291,11 +268,13 @@
 	margin-top:10px;
 }
 
-
+/*20131128 delete*/
+/*
 .container {
 	float:left;
 	background:#FFF;
-}
+}*/
+
 .jdt {
 	width:960px;
 	height:121px;
@@ -464,6 +443,9 @@ nav.course-material ol.course-tabs li a.active, nav.course-material .xmodule_dis
 .active:hover {
 	background:#838383 !important;
 }
+
+/*20131128 delete*/
+/*
 nav.course-material ol.course-tabs li a {
 	border-radius: 3px 3px 3px 3px;
 	color: rgb(85, 85, 85);
@@ -476,7 +458,7 @@ nav.course-material ol.course-tabs li a {
 	width: auto;
 	float:left;
 	margin-right:5px;
-}
+}*/
 nav.course-material ol.course-tabs li a:hover {
 	background:#f1f1f1;
 }
@@ -1046,6 +1028,7 @@ te
 	margin-left:20px;
 	margin-top:20px;
 }
+
 .page {
 	margin-top:20px;
 	margin-bottom:40px;
@@ -1097,3 +1080,19 @@ background:#;
 	padding:2px 5px;
 }
 .weizhi { float:right; width:200px; margin-bottom:20px; margin-right:5px; text-align:right; display:block;}
+/*-----------------ico_clear----------------*/
+.icon-clear:before {
+	content:url(../image/btn_del.png);
+	padding-left: 2px;
+}
+
+.people_default {
+	float:right;
+	width:842px;
+	margin-right:40px;
+	margin-top:30px;
+	/*border-bottom:1px solid #ccc;*/
+	
+	line-height:33px;
+	font-size:25px;
+}
