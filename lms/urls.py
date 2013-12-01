@@ -66,8 +66,6 @@ urlpatterns = (
     url(r'^update_certificate$', 'certificates.views.update_certificate'),
     url(r'^download_certificate$', 'certificates.views.download_certificate'),
     url(r'^download_certificate_demo$', 'certificates.views.download_certificate_demo'),
-    url(r'^download_certificate$', 'certificates.views.download_certificate'),
-    url(r'^download_certificate_demo$', 'certificates.views.download_certificate_demo'),
     url(r'^$', 'branding.views.index', name="root"),   # Main marketing page, or redirect to courseware
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
     url(r'^login$', 'student.views.signin_user', name="signin_user"),
