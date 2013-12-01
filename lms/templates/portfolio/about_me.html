@@ -40,12 +40,10 @@
 <div class="main" style="margin-top:20px">
 	<div class="container2">
 		<section class="course-index">
-			<div class="sub_tit" style="width:auto;"><span class="user_name">KelSunday</span></div>
+			<div class="sub_tit" style="width:auto;"><span class="user_name">${ user.username }</span></div>
 			<a class="sub_menu xz" href="${reverse('portfolio_about_me',args=[course.id])}">About Me</a> 
-			<a class="sub_menu" href="${reverse('portfolio_journal_and_reflections',args=[course.id])}">My Course Work</a>
+			<a class="sub_menu" href="${reverse('portfolio_journal_and_reflections',args=[course.id])}">My Coursework</a>
 			<a class="sub_menu" href="#">My Discussions</a> 
-			<a class="sub_menu" href="#">Peer Work to Review</a> 
-			<a class="sub_menu" href="#">My Work Needing Review</a> 
 		</section>
 		
 		<section class="course-content">

@@ -310,7 +310,6 @@
 }
 .container {
 	float:left;
-	background:#FFF;
 }
 .jdt {
 	width:960px;
@@ -1418,3 +1417,25 @@ a.orange_btn {
     font-weight: normal;
 }
 
+a.edit-course-btn {
+    background-color: #6DCCF1;
+    background-image: linear-gradient(to bottom, #6DCCF1, #38A8E5);
+    border: 1px solid #2D81AD;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 1px rgba(0, 0, 0, 0.15);
+    color: #FFFFFF;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    height: 35px;
+    line-height: 32px;
+    margin-right: 4px;
+    padding: 0 15px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    float:right;
+}
+a.edit-course-btn:hover {
+    background-color: #4FBBE4;
+    background-image: linear-gradient(to bottom, #4FBBE4, #2090D0);
+    border-color:#297095;
+}
