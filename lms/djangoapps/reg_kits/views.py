@@ -77,6 +77,7 @@ def district_submit(request):
         db.transaction.rollback()
         return HttpResponse(json.dumps({'success': False,'error':'%s' % e}))
     return HttpResponse(json.dumps({'success': True}))
+
 def district_delete(request):
     ids=request.GET.get("ids").split(",")
     message={'success': True}
@@ -85,8 +86,9 @@ def district_delete(request):
         db.transaction.commit()
     except Exception as e:
         db.transaction.rollback()
-        message={'success': False,'error':e}
+        message={'success': False,'error': "%s" % e}
     return HttpResponse(json.dumps(message))
+
 def district_form(request,district_id=None):
    if district_id:
        c=District.objects.get(id=district_id)
@@ -101,9 +103,14 @@ def cohort(request):
     if request.GET.get('district_id'):
         data=data.filter(district_id=request.GET.get('district_id'))
     if request.GET.get('state_id'):
-        data=data.filter(Q(district__state_id=request.GET.get('state_id')))        
+        data=data.filter(Q(district__state_id=request.GET.get('state_id')))    
     data=valid_pager(data,20,request.GET.get('page'))
+
+    for item in data:
+        item.licences_exist=UserProfile.objects.filter(cohort_id=item.id).filter(subscription_status='Imported').count()
+        
     return render_to_response('reg_kits/cohort.html', {"cohorts":data,"ui":"list","pager_params":pager_params(request)})
+
 def cohort_submit(request):
     if not request.user.is_authenticated:
         raise Http404
@@ -125,7 +132,6 @@ def cohort_submit(request):
     
     return HttpResponse(json.dumps({'success': True}))
 
-
 def cohort_delete(request):
     ids=request.GET.get("ids").split(",")
     message={'success': True}
@@ -135,6 +141,7 @@ def cohort_delete(request):
         db.transaction.rollback()
         message={'success': False,'error':"%s" % e}
     return HttpResponse(json.dumps(message))
+
 def cohort_form(request,cohort_id=None):
    if cohort_id:
        c=Cohort.objects.get(id=cohort_id)

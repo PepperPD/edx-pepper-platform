@@ -1,1 +1,2 @@
-Your account for ${settings.PLATFORM_NAME}
+Action Required - Invitation from ${district}
+
