@@ -23,7 +23,7 @@ def journal_and_reflections(request,course_id, chapter_id=''):
     if chapter_id != '':
         content = get_module_combinedopenended(request,course,chapter_id,"False")
     return render_to_response('portfolio/journal_and_reflections.html', {'course':course, 'csrf': csrf(request)['csrf_token'],
-        'content':content,'chapters':chapters,'xqa_server': settings.MITX_FEATURES.get('USE_XQA_SERVER', 'http://xqa:server@content-qa.mitx.mit.edu/xqa')})
+        'content':content,'chapters':chapters,'chapter_id':chapter_id,'xqa_server': settings.MITX_FEATURES.get('USE_XQA_SERVER', 'http://xqa:server@content-qa.mitx.mit.edu/xqa')})
 
 def uploads(request,course_id):
     course = get_course_with_access(request.user, course_id, 'load')
