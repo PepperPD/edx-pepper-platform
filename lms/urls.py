@@ -51,13 +51,22 @@ urlpatterns = (
     
     url(r'^reg_kits/import_user_submit/$', 'reg_kits.views.import_user_submit',name="import_user_submit"),
 
+<<<<<<< HEAD
     url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_search$', 'people.views.course_index', name="people"),
     url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_network$', 'people.views.my_course_index', name="my_people"),
+=======
+    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_search$', 'people.views.course_index', name="people"),
+    url(r'^course/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_network$', 'people.views.my_course_index', name="my_people"),
+>>>>>>> 0bec82f50dcd6c767f8d98ba85ce82fe1b0fa746
     url(r'^people_search$', 'people.views.people', name="people"),
     url(r'^people_network$', 'people.views.my_people', name="my_people"),
     url(r'^resource_library_global$', 'access_resource_library.views.index', name="access_resource_library"),
  
+<<<<<<< HEAD
     #url(r'^download_certificate/$', 'student.views.download_certificate', name="download_certificate"),
+=======
+    url(r'^download_certificate/$', 'student.views.download_certificate', name="download_certificate"),
+>>>>>>> 0bec82f50dcd6c767f8d98ba85ce82fe1b0fa746
     url(r'^latest_news/$', 'student.views.latest_news', name="latest_news"),
     url(r'^access_resource_library/$', 'access_resource_library.views.index', name="access_resource_library"),
     # certificate view
@@ -76,7 +85,11 @@ urlpatterns = (
     url(r'^change_change_grade_level$', 'student.views.change_grade_level_request', name="change_grade_level"),
     url(r'^change_major_subject_area$', 'student.views.change_major_subject_area_request', name="change_major_subject_area"),
     url(r'^change_bio$', 'student.views.change_bio_request', name="change_bio"),
+<<<<<<< HEAD
     url(r'^change_years_in_education$', 'student.views.change_years_in_education_request', name="change_years_in_education"),
+=======
+               url(r'^change_years_in_education$', 'student.views.change_years_in_education_request', name="change_years_in_education"),
+>>>>>>> 0bec82f50dcd6c767f8d98ba85ce82fe1b0fa746
     url(r'^accept_name_change$', 'student.views.accept_name_change'),
     url(r'^reject_name_change$', 'student.views.reject_name_change'),
     url(r'^pending_name_changes$', 'student.views.pending_name_changes'),
