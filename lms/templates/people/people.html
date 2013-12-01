@@ -9,21 +9,20 @@
   from xmodule.modulestore.django import modulestore
 %>
 <%! import json%>
+<style type="text/css" media="screen">
+  #btn-dashboard{display:none;}
+</style>
 
-<%inherit file="../main.html" />
 <%namespace name='static' file='/static_content.html'/>
-
-<%block name="bodyclass">
-%if course:
-courseware ${course.css_class}
-%endif
-</%block>
+<%inherit file="/main.html" />
 
 <%block name="title">
 %if course:
 <title>${_("{course_number} Courseware").format(course_number=course.display_number_with_default) | h}</title>
 %endif
 </%block>
+
+<link rel="stylesheet" type="text/css"  href="/static/tmp-resource/css/people.css"/>
 
 <%block name="headextra">
 %if course:
@@ -38,11 +37,6 @@ courseware ${course.css_class}
   % endif
 %endif
 </%block>
-
-<style type="text/css" media="screen">
-  #btn-dashboard{display:none;}
-</style>
-<link rel="stylesheet" type="text/css"  href="/static/tmp-resource/css/people.css"/>
 
 <style>
 /* Button 1 */
@@ -75,10 +69,13 @@ courseware ${course.css_class}
 %endif
 
 <section class="container">
-  <div class="course-wrapper">
-
-    <!--left content of page------------------------------------------------------------------------------------------------>
+  %if course:
+    <div class="course-wrapper">
+    <section class="course-index" style="width:280px !important;">
+  %else:
+    <div class="course-wrapper" style="border-left: 1px solid rgb(200, 200, 200) !important;">
     <section class="course-index">
+  %endif
       <div class="sub_tit">
         <a class="view_active" href="#">Search</a>
         %if course:
@@ -175,7 +172,7 @@ courseware ${course.css_class}
     
 
     
-    <!--right content of page------------------------------------------------------------------------------------------------>
+  <!--right content of page------------------------------------------------------------------------------------------------>
   %if course:
     <section>
   %else:
@@ -183,31 +180,43 @@ courseware ${course.css_class}
   %endif
       <div class="people_tit">People</div>
     
-      <!--hide these content after press btn'search'-----------------------------------------------------------> 
+      <!--hide this div after press btn'search'-----------------------------------------------------------> 
       <div id="" class="people_default">
         <div style="width:341px;height:126px;margin:0 auto;">
           <img src="/static/images/ppd-people-logo.png"/>
         </div>
-        <section style="padding-left:100px;padding-right:100px;padding-top:20px;padding-bottom:10px;">
+        <section style="padding-left:100px;padding-right:100px;padding-top:20px;padding-bottom:10px;line-height:33px;font-size:25px;">
           Welcome to your People network! Search and use the filters to the left to find peers. Click on a user's name to access their dashboard and begin collaborating on course portfolios. You can also bookmark peers, mentor, and coaches that you want to add to your Pepper team.
         </section>
-         <div style="height:76px;padding-left:660px;">
+         <div style="height:76px;padding-left:710px;">
           <img src="/static/images/ppd-people-arrow.png"/>
         </div>
-      </div>
-      <div id="" class="people_content" style="border-bottom:none !important;margin-top:0px !important;height:160px !important;">
-        <span class="head_photo"><img src="/static/tmp-resource/image/heads/man_head.png" width="110" height="110" border="0" /></span>
-        <span class="name_container"><span class="full_name">Mark Winter</span> 
-        <span class="name_text">Mwinter</span> 
-        <span class="name_text">ABC Unified School District</span> 
-        <span class="name_text">7 Years in Education</span></span>
-        <div class="btn_container">
-          <a href="#" class="button_default button-ondark button-icon button-add icon icon-add" style="-webkit-user-select: none; ">Add to My Network </span></a><a class="ico_hiden"></a>
-        </div>
-      </div> 
-      <!-----------------------------------------------------------------------------------------------------------> 
 
-      <!--show content bellow after press btn'search'-----------------------------------------------------------> 
+        <div id="" style="height:130px;padding-left:90px;border-bottom:1px solid #ccc;">
+          <span class="head_photo"><img src="/static/tmp-resource/image/heads/man_head.png" width="110" height="110" border="0" /></span>
+          <span class="name_container"><span class="full_name">Mark Winter</span> 
+          <span class="name_text">Mwinter</span> 
+          <span class="name_text">ABC Unified School District</span> 
+          <span class="name_text">7 Years in Education</span></span>
+          <div class="btn_container">
+            <a href="#" class="button_default button-ondark button-icon button-add icon icon-add" style="-webkit-user-select: none; ">Add to My Network </span></a><a class="ico_hiden"></a>
+          </div>
+        </div>
+        <div style="height:130px;padding-left:90px;margin-top:20px;">
+          <span class="head_photo"><img src="/static/tmp-resource/image/heads/Sally.png" width="110" height="110" border="0" /></span>
+          <span class="name_container">
+            <span class="full_name">Sally June</span> 
+            <span class="name_text">SJune21</span> 
+            <span class="name_text">123 Unified School District</span> 
+            <span class="name_text">15 Years in Education</span>
+          </span>
+          <div class="btn_container">
+            <a href="#" class="button_default button-ondark button-icon button-yellow icon icon-search" style="-webkit-user-select: none; ">&nbsp;&nbsp;&nbsp;In My Network&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></a><a class="ico_del"></a>
+          </div>
+        </div>  
+      </div>
+      
+      <!--show these content bellow after press btn'search'-----------------------------------------------------------> 
       <div class="people_content" style="display:none;">
         <span class="head_photo"><img src="/static/tmp-resource/image/heads/man_head.png" width="110" height="110" border="0" /></span>
         <span class="name_container"><span class="full_name">Mark Winter</span> 
@@ -226,7 +235,7 @@ courseware ${course.css_class}
           <span class="name_text">123 Unified School District</span> 
           <span class="name_text">15 Years in Education</span>
         </span>
-        <div class="btn_container" style="display:none;">
+        <div class="btn_container">
           <a href="#" class="button_default button-ondark button-icon button-yellow icon icon-search" style="-webkit-user-select: none; ">&nbsp;&nbsp;&nbsp;In My Network&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></a><a class="ico_del"></a>
         </div>
       </div>
