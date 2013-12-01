@@ -250,19 +250,33 @@ def signin_user(request):
 
 
 @ensure_csrf_cookie
-def register_user(request, extra_context=None):
+def register_user(request, activation_key):
     """
     This view will display the non-modal registration form
     """
     if request.user.is_authenticated():
         return redirect(reverse('dashboard'))
 
+    reg=Registration.objects.get(activation_key=activation_key)
+
+    if not reg:
+        return HttpResponse("Invalid activation key.")
+
+    profile=UserProfile.objects.get(user_id=reg.user_id)
+
+    if profile.subscription_status=='Registered':
+        return HttpResponse("User already registered.")
+
+    if not profile.cohort_id:
+       return HttpResponse("Invalid cohort.")
+        
     context = {
+        'profile': profile, 
         'course_id': request.GET.get('course_id'),
         'enrollment_action': request.GET.get('enrollment_action')
     }
-    if extra_context is not None:
-        context.update(extra_context)
+    # if extra_context is not None:
+    #     context.update(extra_context)
 
     return render_to_response('register.html', context)
 

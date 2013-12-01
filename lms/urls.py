@@ -69,7 +69,10 @@ urlpatterns = (
     url(r'^$', 'branding.views.index', name="root"),   # Main marketing page, or redirect to courseware
     url(r'^dashboard$', 'student.views.dashboard', name="dashboard"),
     url(r'^login$', 'student.views.signin_user', name="signin_user"),
-    url(r'^register$', 'student.views.register_user', name="register_user"),
+
+    # url(r'^register$', 'student.views.register_user', name="register_user"),
+    url(r'^register/(?P<activation_key>[^/]+)/$', 'student.views.register_user', name="register_user"),
+
     url(r'^admin_dashboard$', 'dashboard.views.dashboard'),
     url(r'^change_email$', 'student.views.change_email_request', name="change_email"),
     url(r'^email_confirm/(?P<key>[^/]*)$', 'student.views.confirm_email_change'),

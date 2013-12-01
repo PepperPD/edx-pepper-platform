@@ -328,6 +328,7 @@ def import_user_submit(request):
             db.transaction.rollback()
             message={'success': False,'error':'Import error: %s. At cvs line: %s, Nobody imported.' % (e,count_success+1)}
     return HttpResponse(json.dumps(message))
+
 def send_invite_email(request):
     try:
         data=filter_user(request)
@@ -337,12 +338,12 @@ def send_invite_email(request):
         wait=data[:int(count)]
         for item in wait:
             reg = Registration.objects.get(user=item)
-            d = {'name': item.first_name + " " + item.last_name, 'key': reg.activation_key}
+            d = {'name': "%s %s" % (item.first_name,item.last_name), 'key': reg.activation_key,'district': item.cohort.district.name}
             subject = render_to_string('emails/activation_email_subject.txt', d)
             subject = ''.join(subject.splitlines())
             message = render_to_string('emails/activation_email.txt', d)
             try:
-                _res = item.user.email_user(subject, message, "djangoedx@gmail.com") # settings.default_from_email
+                item.user.email_user(subject, message, "djangoedx@gmail.com") # settings.default_from_email
             except Exception as e:
                 # log.warning('unable to send reactivation email', exc_info=true)
                 raise Exception('unable to send reactivation email: %s' % e)
@@ -376,6 +377,7 @@ def transaction(request):
     data=Transaction.objects.raw(sql)
     data=valid_pager(list(data),20,request.GET.get('page'))
     return render_to_response('reg_kits/transaction.html', {"transactions":data, "ui":"list","pager_params":pager_params(request)})
+
 @ensure_csrf_cookie
 @cache_if_anonymous
 def transaction_submit(request):
