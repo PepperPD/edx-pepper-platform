@@ -29,10 +29,85 @@ from django.forms import ModelForm, forms
 import comment_client as cc
 from pytz import UTC
 
+# from reg_objects.models import District,School,Cohort
 
 log = logging.getLogger(__name__)
 AUDIT_LOG = logging.getLogger("audit")
 
+from django.db import connection
+
+class YearsInEducation(models.Model):
+    class Meta:
+        db_table = 'years_in_education'
+    name = models.CharField(blank=False, max_length=20, db_index=False)
+
+class GradeLevel(models.Model):
+    class Meta:
+        db_table = 'grade_level'
+    name = models.CharField(blank=False, max_length=20, db_index=False)
+
+class SubjectArea(models.Model):
+    class Meta:
+        db_table = 'subject_area'
+    name = models.CharField(blank=False, max_length=20, db_index=False)    
+
+class State(models.Model):
+    class Meta:
+        db_table = 'state'
+    name = models.CharField(blank=False, max_length=20, db_index=False)
+
+class District(models.Model):
+    class Meta:
+        db_table = 'district'
+    state = models.ForeignKey(State,on_delete=models.PROTECT)
+    code = models.CharField(blank=True, max_length=50, db_index=True)         
+    name= models.CharField(blank=True, max_length=255, db_index=False)
+
+class Cohort(models.Model):
+    class Meta:
+        db_table = 'cohort'
+    district = models.ForeignKey(District,on_delete=models.PROTECT)
+    code = models.CharField(blank=True, max_length=50, db_index=True) 
+    licences=models.IntegerField(blank=False, null=False, db_index=False)
+    term_months=models.IntegerField(blank=False, null=False, db_index=False)
+    start_date=models.DateTimeField(blank=False, db_index=False)
+    
+class School(models.Model):
+    class Meta:
+        db_table = 'school'
+    district = models.ForeignKey(District,on_delete=models.PROTECT)
+    name = models.CharField(blank=False, max_length=255, db_index=True) 
+    # district_id = models.CharField(blank=False, max_length=255, db_index=True) 
+
+# todo: Remove functions no use 
+def dictfetchall(cursor):
+    '''Returns a list of all rows from a cursor as a column: result dict.
+    Borrowed from Django documentation'''
+    desc = cursor.description
+    table = []
+    # table.append([col[0] for col in desc])
+    # ensure response from db is a list, not a tuple (which is returned
+    # by MySQL backed django instances)
+    rows_from_cursor=cursor.fetchall()
+    table = table + [list(row) for row in rows_from_cursor]
+    b=[]
+    for r in table:
+        t={}
+        for i,d in enumerate(desc):
+            t[d[0]]=r[i]
+        b.append(t)
+    return b
+
+def query_list(cursor, query_string):
+    cursor.execute(query_string)
+    raw_result=dictfetchall(cursor)
+    return raw_result
+
+def query_dict(cursor, query_string):
+    cursor.execute(query_string)
+    raw_result=dictfetchall(cursor)
+    if len(raw_result):
+        return raw_result[0]
 
 class UserProfile(models.Model):
     """This is where we store all the user demographic fields. We have a
@@ -61,19 +136,26 @@ class UserProfile(models.Model):
     # This is not visible to other users, but could introduce holes later
     user = models.OneToOneField(User, unique=True, db_index=True, related_name='profile')
     name = models.CharField(blank=True, max_length=255, db_index=True)
+
+    # district = models.OneToOneField(District, unique=True, db_index=True, related_name='profile')
+    # cohort = models.OneToOneField(Cohort, unique=True, db_index=True, related_name='profile')
+
+    school = models.ForeignKey(School,on_delete=models.PROTECT,blank=True)
+    cohort = models.ForeignKey(Cohort,on_delete=models.PROTECT)
+    
 #@begin:Add some fields to student profile
-#@date:2013-11-02        
-    major_subject_area_id=models.CharField(blank=True, max_length=255, db_index=True)
+#@date:2013-11-15        
+    major_subject_area_id=models.IntegerField(blank=True, null=True, db_index=True)
     grade_level_id=models.CharField(blank=True, max_length=255, db_index=True)
-    school_id=models.CharField(blank=True, max_length=255, db_index=True)
-    years_in_education_id=models.CharField(blank=True, max_length=255, db_index=True)
-    district_id=models.CharField(blank=True, max_length=255, db_index=True)
-    contract_id=models.CharField(blank=True, max_length=255, db_index=True)
+    years_in_education_id=models.IntegerField(blank=True, null=True, db_index=True)
     first_name = models.CharField(blank=True, max_length=255, db_index=True)
     last_name = models.CharField(blank=True, max_length=255, db_index=True)
-    bio = models.CharField(blank=True, max_length=255, db_index=True)
-    photo = models.CharField(blank=True, max_length=50, db_index=False)
+    bio = models.CharField(blank=True, max_length=255, db_index=True)    
+    subscription_status=models.CharField(blank=False, max_length=20, db_index=False)
+    subscription_start_date=models.DateTimeField(auto_now_add=False, db_index=False)
 #@end
+
+    photo = models.CharField(blank=True, max_length=50, db_index=False)
     meta = models.TextField(blank=True)  # JSON dictionary for future expansion
     courseware = models.CharField(blank=True, max_length=255, default='course.xml')
 
@@ -128,6 +210,29 @@ class UserProfile(models.Model):
 
 TEST_CENTER_STATUS_ACCEPTED = "Accepted"
 TEST_CENTER_STATUS_ERROR = "Error"
+
+class Transaction(models.Model):
+    class Meta:
+        db_table = 'transaction'
+
+    # from django.contrib.contenttypes.models import ContentType
+    # from django.contrib.contenttypes import generic
+
+    # http://stackoverflow.com/questions/7269319/django-multi-table-inheritance-specify-custom-one-to-one-column-name
+    # https://docs.djangoproject.com/en/dev/topics/db/queries/
+    # owner_cohort=models.OneToOneField(Cohort, unique=True, db_index=True, related_name='transaction', db_column="owner_id",parent_link=True)
+    # owner_user=models.OneToOneField(UserProfile, unique=True, db_index=True, related_name='transaction', db_column="owner_id",parent_link=True)
+    # subscription_type = models.ForeignKey(ContentType)
+    subscription_type = models.CharField(blank=False, max_length=20, db_index=False)
+    # owner_id = models.IntegerField(blank=False, null=False, db_index=True)
+    
+    owner = models.ForeignKey(Cohort,on_delete=models.PROTECT,db_column='owner_id')
+    
+    # owner_object = generic.GenericForeignKey('subscription_type', 'owner_id')
+    code = models.CharField(blank=True, max_length=50, db_index=True)
+    start_date = models.DateTimeField(blank=False, db_index=False)
+    term_months = models.IntegerField(blank=False, null=False, db_index=False)
+    # status = models.CharField(blank=True, max_length=255, db_index=False)
 
 class TestCenterUser(models.Model):
     """This is our representation of the User for in-person testing, and
@@ -645,7 +750,6 @@ class PendingNameChange(models.Model):
 #@end        
     rationale = models.CharField(blank=True, max_length=1024)
 
-
 class PendingEmailChange(models.Model):
     user = models.OneToOneField(User, unique=True, db_index=True)
     new_email = models.CharField(blank=True, max_length=255, db_index=True)
@@ -1002,28 +1106,5 @@ def get_user_by_id(user_id):
     up=None
     up = UserProfile.objects.get(user=u)
     return u, up    
-#@end
-
-#@begin: Newly added contract class
-#@date:2013-11-02  
-class Contract(models.Model):
-    class Meta:
-        db_table = 'contract'
-    # id = models.IntegerField(blank=True, db_index=True, primary_key=True)        
-    name = models.CharField(blank=True, max_length=255, db_index=False)
-    district_id = models.IntegerField(blank=True, null=True, db_index=False)
-    term_months = models.IntegerField(blank=True, null=True, db_index=False)
-    licenses = models.IntegerField(blank=True, null=True, db_index=False)
-    status = models.CharField(blank=True, max_length=255, db_index=False)
-    # alter table contract add state_id int;
-#@end
-
-#@begin: Newly added district class
-#@date:2013-11-06
-class District(models.Model):
-    class Meta:
-        db_table = 'district'
-    # id = models.IntegerField(blank=True, db_index=True, primary_key=True)
-    name= models.CharField(blank=True, max_length=255, db_index=False)
 #@end
 
