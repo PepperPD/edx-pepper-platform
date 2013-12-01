@@ -14,16 +14,7 @@
 </style>
 
 <%namespace name='static' file='/static_content.html'/>
-<%inherit file="../main.html" />
-
-
-
-
-<%block name="bodyclass">
-%if course:
-courseware ${course.css_class}
-%endif
-</%block>
+<%inherit file="/main.html" />
 
 <%block name="title">
 %if course:
@@ -32,7 +23,6 @@ courseware ${course.css_class}
 </%block>
 
 <link rel="stylesheet" type="text/css"  href="/static/tmp-resource/css/people.css"/>
-
 
 <%block name="headextra">
 %if course:
@@ -47,8 +37,6 @@ courseware ${course.css_class}
   % endif
 %endif
 </%block>
-
-
 
 <style>
 /* Button 1 */
@@ -70,8 +58,6 @@ courseware ${course.css_class}
 }
 </style>
 
-<body class="wap">
-  
 %if False:
   %for u in page.object_list :
   ${u.name} ---  ${u.email} <br>
@@ -84,8 +70,13 @@ courseware ${course.css_class}
 
 
 <section class="container">
-  <div class="course-wrapper">
-    <section class="course-index ">
+  %if course:
+    <div class="course-wrapper">
+    <section class="course-index" style="width:280px !important;">
+  %else:
+    <div class="course-wrapper" style="border-left: 1px solid rgb(200, 200, 200) !important;">
+    <section class="course-index">
+  %endif
       <div class="sub_tit">
         %if course:
           <a class="view_normal" href="${reverse('people',args=[course.id])}">Search</a>
