@@ -7,11 +7,7 @@
   from certificates.models import CertificateStatuses
   from xmodule.modulestore import MONGO_MODULESTORE_TYPE
   from xmodule.modulestore.django import modulestore
-#@begin:Import new fields data
-#@date:2013-11-02        
-  from prop_dict.models import schools,districts,subject_areas,grade_levels,years_in_educations
-  from prop_dict.models import get_district,get_school,get_grade_level,get_subject_area,get_years_in_education
-#@end
+  from student.models import School,Cohort,District,SubjectArea,GradeLevel,YearsInEducation
 %>
 
 <!--@begin:Hide Dashboard button in this page-->
@@ -464,14 +460,14 @@
 			</div>
             
 			<div style="line-height:30px;">District:
-			  % if user.profile.district_id:
-			  ${get_district(user.profile.district_id)['name']}
+			  % if user.profile.cohort_id:
+			  ${user.profile.cohort.district.name}
 			  % endif
 			</div>
 
 			<div style="line-height:30px;">School:
 			  % if user.profile.school_id:
-			  ${get_school(user.profile.school_id)['name']}
+			  ${user.profile.school.name}
 			  % endif
 			  (<a href="#change_school" rel="leanModal">edit</a>)
 			</div>
@@ -482,7 +478,7 @@
 			  % if user.profile.grade_level_id:
 			  % for i,c in enumerate(user.profile.grade_level_id.split(',')):
 			  % if len(c)>0:
-			  <% gn.append(get_grade_level(c)['name']) %>
+			  <% gn.append(GradeLevel.objects.get(id=c).name) %>
 			  % endif
 			  % endfor
 			  % endif
@@ -492,13 +488,13 @@
 			</div>
 			<div style="line-height:30px;">Major Subject Area:
 			  % if user.profile.major_subject_area_id:
-			  ${get_subject_area(user.profile.major_subject_area_id)['name']}
+			  ${SubjectArea.objects.get(id=user.profile.major_subject_area_id).name}
 			  % endif
 			  (<a href="#change_major_subject_area" rel="leanModal">edit</a>)
 			</div>
 			<div style="line-height:30px;">Number of Years Taught:
 			  % if user.profile.years_in_education_id:
-			  ${get_years_in_education(user.profile.years_in_education_id)['name']}
+			  ${YearsInEducation.objects.get(id=user.profile.years_in_education_id).name}
 			  % endif
               (<a href="#change_years_in_education" rel="leanModal">edit</a>)
 			</div>
@@ -879,10 +875,10 @@
             <label style="margin:20px 0;display:block;">
               <select name="school_id" style="width:100%" autocomplete="off">
 
-              	% if user.profile.district_id:
+              	% if user.profile.cohort:
                 
-                %for item in schools(user.profile.district_id):
-                <option value="${item['id']}">${item['name']}</option>
+                %for item in School.objects.filter(district_id=user.profile.cohort.district.id):
+                <option value="${item.id}">${item.name}</option>
                 %endfor
                 
               	% endif
@@ -918,14 +914,10 @@
         <div class="input-group">
           <label style="margin:20px 0;display:block;">
             <input id="grade_level_id" type="hidden" name="grade_level_id" value="" autocomplete="off"/>
-
-
-            %for item in grade_levels():
-       
-            
+            %for item in GradeLevel.objects.all():
             <span class="level">
-              <a href="#" id="grade_btn${item['id']}" class="btn_class" onclick="click_grade_btn(${item['id']});return false">
-                ${item['name']}
+              <a href="#" id="grade_btn${item.id}" class="btn_class" onclick="click_grade_btn(${item.id});return false">
+                ${item.name}
               </a>
             </span>
             %endfor
@@ -959,8 +951,8 @@
         <div class="input-group">
           <label style="margin:20px 0;display:block;">
             <select id="major_subject_area_id" name="major_subject_area_id" style="width:100%" autocomplete="off">
-              %for item in subject_areas():
-              <option value="${item['id']}">${item['name']}</option>
+              %for item in SubjectArea.objects.all():
+              <option value="${item.id}">${item.name}</option>
               %endfor
             </select>
           </label>
@@ -989,8 +981,8 @@
         <div class="input-group">
           <label style="margin:20px 0;display:block;">
             <select id="years_in_education_id" name="years_in_education_id" style="width:100%" autocomplete="off">
-              %for item in years_in_educations():
-              <option value="${item['id']}">${item['name']}</option>
+              %for item in YearsInEducation.objects.all():
+              <option value="${item.id}">${item.name}</option>
               %endfor
             </select>
           </label>
