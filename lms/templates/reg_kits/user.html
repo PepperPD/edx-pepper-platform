@@ -67,6 +67,8 @@
             <th>District</th>
             <th>Cohort</th>
             <th>School</th>
+            <th>Invite Date</th>
+            <th>Activate Date</th>
             <th>Status</th>
           </tr>
           % for item in users:
@@ -83,6 +85,8 @@
             %else:
             <td></td>
             %endif
+            <td align="center">${item.invite_date}</td>
+            <td align="center">${item.activate_date}</td>
             <td align="center">${item.subscription_status}</td>
           </tr>
           % endfor       
@@ -152,8 +156,8 @@ dropSchool(form,state_id,district_id,function(){
 function send_invite_email(){
   var total=${invite_count};
   if(total<1)return alert("User count is 0.")
-  var flds=["id","name","state_id"]
-  var data=getFormData(this,flds);
+  var flds=["cohort_id","district_id","state_id","school_id","subscription_status"]
+  var data=getFormData(form[0],flds);
   data.count=1
   var done=0;
   (function run(){

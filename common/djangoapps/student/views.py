@@ -257,10 +257,12 @@ def register_user(request, activation_key):
     if request.user.is_authenticated():
         return redirect(reverse('dashboard'))
 
-    reg=Registration.objects.get(activation_key=activation_key)
+    regs=Registration.objects.filter(activation_key=activation_key)
 
-    if not reg:
+    if not regs:
         return HttpResponse("Invalid activation key.")
+    else:
+        reg=regs[0]
 
     profile=UserProfile.objects.get(user_id=reg.user_id)
 
@@ -271,7 +273,8 @@ def register_user(request, activation_key):
        return HttpResponse("Invalid cohort.")
         
     context = {
-        'profile': profile, 
+        'profile': profile,
+        'activation_key': activation_key,
         'course_id': request.GET.get('course_id'),
         'enrollment_action': request.GET.get('enrollment_action')
     }
@@ -305,12 +308,7 @@ def get_module_for_descriptor(user, request, descriptor, field_data_cache, cours
 
 #@end
 
-
-
-
-
 from django.db import models
-
 
 class StudentModule(models.Model):
     """
@@ -332,7 +330,6 @@ class StudentModule(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, db_index=True)
     module_id = models.CharField(max_length=255, db_index=True)
-
 
 @login_required
 @ensure_csrf_cookie
@@ -753,22 +750,21 @@ def create_account(request, post_override=None):
         post_vars.update(dict(email=email, name=name, password=password))
         log.debug(u'In create_account with external_auth: user = %s, email=%s', name, email)
 
-    # Confirm we have a properly formed request
-#@begin: Check the availability of the following fields as we change the user registration table fields
-#@date:2013-11-02           
+    # Confirm we have a properly formed request          
     for a in ['username', 'email', 'password', 'first_name','last_name']:
-#@end   
         if a not in post_vars:
             js['value'] = _("Error (401 {field}). E-mail us.").format(field=a)
             js['field'] = a
             return HttpResponse(json.dumps(js))
+        
 #@begin:honor_code is not used in Pepper. Change the following confirmation to comments.
 #@date:2013-11-02   
     # if post_vars.get('honor_code', 'false') != u'true':
     #     js['value'] = _("To enroll, you must follow the honor code.").format(field=a)
     #     js['field'] = 'honor_code'
     #     return HttpResponse(json.dumps(js))
-#@end   
+#@end
+
     # Can't have terms of service for certain SHIB users, like at Stanford
     tos_not_required = settings.MITX_FEATURES.get("AUTH_USE_SHIB") \
                        and settings.MITX_FEATURES.get('SHIB_DISABLE_TOS') \
@@ -842,6 +838,9 @@ def create_account(request, post_override=None):
         js['value'] = _("Username should only consist of A-Z and 0-9, with no spaces.").format(field=a)
         js['field'] = 'username'
         return HttpResponse(json.dumps(js))
+
+    if post_vars.get('activation_key'):
+        return activate_imported_account(post_vars)
 
     # Ok, looks like everything is legit.  Create the account.
     ret = _do_create_account(post_vars)
@@ -1227,8 +1226,10 @@ def reactivation_email_for_user(user):
         return HttpResponse(json.dumps({'success': False,
                                         'error': _('No inactive user with this e-mail exists')}))
 
-    d = {'name': user.profile.name,
-         'key': reg.activation_key}
+    d = {'name': "%s %s" % (user.profile.first_name, user.profile.last_name),
+         'key': reg.activation_key,
+         'district':user.profile.cohort.district.name
+         }
 
     subject = render_to_string('emails/activation_email_subject.txt', d)
     subject = ''.join(subject.splitlines())
@@ -1533,3 +1534,26 @@ def change_bio_request(request):
     return HttpResponse(json.dumps({'success': True,
                                     'location': up.location, }))
 #@end
+
+
+def activate_imported_account(post_vars):
+    message={'success': True}
+    try:
+        user_id=Registration.objects.get(activation_key=post_vars.get('activation_key','')).user_id
+        profile=UserProfile.objects.get(user_id=user_id)
+        profile.subscription_status='Registered'
+        profile.first_name=post_vars.get('first_name','')
+        profile.last_name=post_vars.get('last_name','')
+        profile.school_id=post_vars.get('school_id','')
+        profile.major_subject_area_id=post_vars.get('major_subject_area_id','')
+        profile.years_in_education_id=post_vars.get('years_in_education_id','')
+        profile.activate_date=datetime.datetime.now(UTC)
+        profile.save()
+
+        profile.user.is_active=True
+        profile.user.username=post_vars.get('username','')
+        profile.user.set_password(post_vars.get('password',''))
+        profile.user.save()
+    except Exception as e:
+        message={'success':False,error:"%s" % e}
+    return HttpResponse(json.dumps(message))

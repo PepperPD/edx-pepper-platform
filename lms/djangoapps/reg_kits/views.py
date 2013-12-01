@@ -337,7 +337,7 @@ def send_invite_email(request):
         count=request.GET.get('count')
         wait=data[:int(count)]
         for item in wait:
-            reg = Registration.objects.get(user=item)
+            reg = Registration.objects.get(user_id=item.user_id)
             d = {'name': "%s %s" % (item.first_name,item.last_name), 'key': reg.activation_key,'district': item.cohort.district.name}
             subject = render_to_string('emails/activation_email_subject.txt', d)
             subject = ''.join(subject.splitlines())
@@ -348,12 +348,16 @@ def send_invite_email(request):
                 # log.warning('unable to send reactivation email', exc_info=true)
                 raise Exception('unable to send reactivation email: %s' % e)
             item.subscription_status='Unregistered'
+            from pytz import UTC
+            import datetime
+            item.invite_date=datetime.datetime.now(UTC)
             item.save()
             db.transaction.commit()
         message={"success":True,"sent":len(wait),"remain":data.count()}
     except Exception as e:
        message={"success":False,"error":"%s" % e}
     return HttpResponse(json.dumps(message))
+
 ##############################################
 # transaction
 ##############################################

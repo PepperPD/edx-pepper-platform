@@ -152,7 +152,9 @@ class UserProfile(models.Model):
     last_name = models.CharField(blank=True, max_length=255, db_index=True)
     bio = models.CharField(blank=True, max_length=255, db_index=True)    
     subscription_status=models.CharField(blank=False, max_length=20, db_index=False)
-    subscription_start_date=models.DateTimeField(auto_now_add=False, db_index=False)
+    
+    invite_date=models.DateTimeField(auto_now_add=False, db_index=False)
+    activate_date=models.DateTimeField(auto_now_add=False, db_index=False)
 #@end
 
     photo = models.CharField(blank=True, max_length=50, db_index=False)

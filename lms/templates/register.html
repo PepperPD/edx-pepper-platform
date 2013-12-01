@@ -14,7 +14,7 @@ from student.models import UserProfile
 from datetime import date 
 import calendar 
 from libtahoe import isdev,isdemo1,isdemo2 
-from student.models import State,District,SubjectArea,GradeLevel,YearsInEducation
+from student.models import State,District,SubjectArea,GradeLevel,YearsInEducation,School
 %>
 
 <%! import json%>
@@ -124,6 +124,44 @@ from student.models import State,District,SubjectArea,GradeLevel,YearsInEducatio
     }
   </script>
 </%block>
+
+   <script type="text/javascript">
+            var json_school="[]";
+            
+            function reload_school_dropdown(district_id){
+            var drop=document.getElementById("school_id");
+            $(drop).find("option").filter(function(){return $.trim(this.value)!=''}).remove();
+            if(district_id=='') return;
+            
+            $.each(json_school,function(i,school){
+
+            if(school.district_id==district_id)
+            $(drop).append("<option value='"+school.id+"'>"+school.name+"</option>");
+            })
+
+            }
+            function click_grade_btn(i){
+            var vals={}
+            $.each($("#grade_level_id").val().split(","),function(i,v){
+            if(v)vals[v]=1
+            })
+            var link=document.getElementById("grade_btn"+i)
+            if($(link).hasClass("btn_class_active")){
+            $(link).removeClass("btn_class_active");
+            vals[i]=''
+            }else{
+            $(link).addClass("btn_class_active");
+            vals[i]=1
+            }
+            var arVals=[]
+            $.each(vals,function(i,v){
+            if(v)arVals.push(i)
+            })
+            arVals.sort(function(a,b){return parseInt(a)>parseInt(b)})
+            $("#grade_level_id").val(arVals.join());
+            }
+          </script>
+
 <!--@begin:Change the banding image in Login page-->
 <!--@date:2013-11-02-->
 <div style="margin:0 auto;width:960px;height:195px;background:url(static/images/ppd-register-banner.png);border-bottom:1px solid #000;">
@@ -140,6 +178,8 @@ from student.models import State,District,SubjectArea,GradeLevel,YearsInEducatio
   <section role="main" class="content">
     <form role="form" id="register-form" method="post" data-remote="true" action="/create_account" novalidate>
       <!-- status messages -->
+      <input id="activation_key" type="hidden" name="activation_key" value="${activation_key}" required aria-required="true" />
+      
       <div role="alert" class="status message">
         <h3 class="message-title">${_("We're sorry, {platform_name} enrollment is not available in your region").format(platform_name=settings.PLATFORM_NAME)}</h3>
         <p class="message-copy">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
@@ -160,8 +200,13 @@ from student.models import State,District,SubjectArea,GradeLevel,YearsInEducatio
 <!--@begin:Registraction page: remove some asterisks and change the font to bold-->
 <!--@date:2013-11-02-->
             <label for="email" style="font-weight:bold;">${_('E-mail')}</label>
+            %if profile:
+            <input type="hidden" name="email" value="${profile.user.email}" />
+            ${profile.user.email}
+            %else:
             <input class="" id="email" type="email" name="email" value="" placeholder="${_('example: username@domain.com')}" required aria-required="true" />
-<!--@end-->            
+            %endif
+<!--@end-->
           </li>
           <li class="field required password" id="field-password">
             <label for="password">${_('Password')}</label>
@@ -174,11 +219,6 @@ from student.models import State,District,SubjectArea,GradeLevel,YearsInEducatio
           </li>
 <!--@begin:Registraction page: add more fields-->
 <!--@date:2013-11-02-->
-          <!-- <li class="field required text" id="field-name"> -->
-          <!--   <label for="name">${_('Full Name')}</label> -->
-          <!--   <input id="name" type="text" name="name" value="" placeholder="${_('example: Jane Doe')}" required aria-required="true" /> -->
-          <!--   <span class="tip tip-input">${_("Needed for any certificates you may earn <strong>(cannot be changed later)</strong>")}</span> -->
-          <!-- </li> -->
           <li class="field required text" id="field-name">
             <label for="first_name">${_('First Name')}</label>
             <input id="first_name" type="text" name="first_name" value="" placeholder="${_('example: Jane')}" required aria-required="true" />
@@ -189,10 +229,25 @@ from student.models import State,District,SubjectArea,GradeLevel,YearsInEducatio
             <input id="last_name" type="text" name="last_name" value="" placeholder="${_('example: Doe')}" required aria-required="true" />
             <span class="tip tip-input">${_("Needed for any certificates you may earn")}</span>
           </li>
+          
+          <li class="field required text" id="field-name">
+            <label for="school_id">${_('State')}</label>
+            ${profile.cohort.district.state.name}
+          </li>
+
+         <li class="field required text" id="field-name">
+            <label for="school_id">${_('District')}</label>
+            <input type="hidden" name="district_id" value="${profile.cohort.district.id}" />
+            ${profile.cohort.district.name}
+          </li>
+          
           <li class="field required text" id="field-name">
             <label for="school_id">${_('School')}</label>
             <select autocomplete="off" id="school_id" name="school_id">
               <option value="">--</option>
+              %for item in School.objects.filter(district_id=profile.cohort.district_id):
+              <option value="${item.id}">${item.name}</option>
+              %endfor
             </select>
           </li>
           <li class="field required text" id="field-name">
