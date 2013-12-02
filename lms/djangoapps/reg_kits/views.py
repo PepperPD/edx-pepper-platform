@@ -353,10 +353,10 @@ def send_invite_email(request):
             item.invite_date=datetime.datetime.now(UTC)
             item.save()
             db.transaction.commit()
-        message={"success":True,"sent":len(wait),"remain":data.count()}
+        ret={"success":True,"sent":len(wait),"remain":data.count()}
     except Exception as e:
-       message={"success":False,"error":"%s" % e}
-    return HttpResponse(json.dumps(message))
+       ret={"success":False,"error":"%s" % e}
+    return HttpResponse(json.dumps(ret))
 
 ##############################################
 # transaction

@@ -1,4 +1,4 @@
-Dear ${firstname} ${lastname},
+Dear ${first_name} ${last_name},
 The ${district} welcomes you to Pepper, the online network of Common Core Specialists. Please click the link below to take a tour of our online professional development courses, resources and networking tools.
 www.pepper.com/tour
 When you are ready, log back into Pepper and select from a growing list of courses created by WestEd, the nation’s leading Mathematics and English Language Arts professional development organization for more than 40 years. Download resources for you and your class, navigate through samples of Smarter Balanced and PARCC next-generation assessment items, and explore your own path to become a specialist in the Common Core.

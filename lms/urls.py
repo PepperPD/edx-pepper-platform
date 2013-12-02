@@ -54,6 +54,10 @@ urlpatterns = (
     url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_search$', 'people.views.course_index', name="people"),
     url(r'^courses/(?P<course_id>[^/]+/[^/]+/[^/]+)/people_network$', 'people.views.my_course_index', name="my_people"),
 
+    url(r'^research_pedagogy$', 'branding.views.intro_research', name="intro_research"),
+    url(r'^our_team$', 'branding.views.intro_ourteam', name="intro_ourteam"),
+    url(r'^what_is_pepper$', 'branding.views.what_is', name="what_is"),
+
     url(r'^people_search$', 'people.views.people', name="people"),
     url(r'^people_network$', 'people.views.my_people', name="my_people"),
     url(r'^resource_library_global$', 'access_resource_library.views.index', name="access_resource_library"),

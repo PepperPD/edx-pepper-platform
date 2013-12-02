@@ -1537,7 +1537,7 @@ def change_bio_request(request):
 
 
 def activate_imported_account(post_vars):
-    message={'success': True}
+    ret={'success': True}
     try:
         user_id=Registration.objects.get(activation_key=post_vars.get('activation_key','')).user_id
         profile=UserProfile.objects.get(user_id=user_id)
@@ -1545,15 +1545,28 @@ def activate_imported_account(post_vars):
         profile.first_name=post_vars.get('first_name','')
         profile.last_name=post_vars.get('last_name','')
         profile.school_id=post_vars.get('school_id','')
+        profile.grade_level_id=post_vars.get('grade_level_id','')
         profile.major_subject_area_id=post_vars.get('major_subject_area_id','')
         profile.years_in_education_id=post_vars.get('years_in_education_id','')
         profile.activate_date=datetime.datetime.now(UTC)
         profile.save()
 
+        d={"first_name":profile.first_name,"last_name":profile.last_name,"district":profile.cohort.district.name}
+
+        # composes activation email
+        subject = render_to_string('emails/welcome_subject.txt', d)
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        message = render_to_string('emails/welcome_body.txt', d)
+
         profile.user.is_active=True
         profile.user.username=post_vars.get('username','')
         profile.user.set_password(post_vars.get('password',''))
         profile.user.save()
+
+        profile.user.email_user(subject, message, "djangoedx@gmail.com") # settings.default_from_email
+
     except Exception as e:
-        message={'success':False,error:"%s" % e}
-    return HttpResponse(json.dumps(message))
+        transaction.rollback()
+        ret={'success':False,error:"%s" % e}
+    return HttpResponse(json.dumps(ret))
