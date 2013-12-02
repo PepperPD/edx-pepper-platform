@@ -1,6 +1,6 @@
 Dear Educator,
 The ${district} invites you to join Pepper, the online network of Common Core Specialists. Please click the link below to activate your account:
-http://${site}/registration/${key}
+http://${site}/register/${key}
 
 When you click on the link, you will be asked to provide basic account information including your name and primary school location. Once activated, you will receive a welcome email that verifies your membership and will lead you to a tutorial to help you navigate.
 Congratulations on being selected to join the network, please feel free to contact us with any questions or concerns at PepperSupport@pcgus.com or 1-800-PEPPER.

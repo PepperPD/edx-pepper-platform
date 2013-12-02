@@ -107,7 +107,7 @@ def cohort(request):
     data=valid_pager(data,20,request.GET.get('page'))
 
     for item in data:
-        item.licences_exist=UserProfile.objects.filter(cohort_id=item.id).filter(subscription_status='Imported').count()
+        item.licences_exist=UserProfile.objects.filter(cohort_id=item.id).count()
         
     return render_to_response('reg_kits/cohort.html', {"cohorts":data,"ui":"list","pager_params":pager_params(request)})
 
